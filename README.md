@@ -323,6 +323,63 @@ await client.messages.sendInteractiveList({
 });
 ```
 
+### Interactive Messages - CTA URL Buttons
+
+Send messages with call-to-action URL buttons that provide a cleaner, more professional appearance than raw URLs:
+
+```typescript
+// Basic CTA message
+await client.messages.sendInteractiveCTA({
+  to: '+1234567890',
+  body: 'Check out our new products!',
+  action: {
+    displayText: 'View Products',
+    url: 'https://example.com/products'
+  }
+});
+
+// CTA with image header and footer
+await client.messages.sendInteractiveCTA({
+  to: '+1234567890',
+  header: {
+    type: 'image',
+    image: { link: 'https://example.com/banner.jpg' }
+  },
+  body: 'Tap the button below to see available dates.',
+  action: {
+    displayText: 'See Dates',
+    url: 'https://example.com/calendar?ref=whatsapp'
+  },
+  footer: 'Dates subject to change.'
+});
+
+// CTA with video header
+await client.messages.sendInteractiveCTA({
+  to: '+1234567890',
+  header: {
+    type: 'video',
+    video: { link: 'https://example.com/promo.mp4' }
+  },
+  body: 'Watch our latest promotional video!',
+  action: {
+    displayText: 'Learn More',
+    url: 'https://example.com/about'
+  }
+});
+```
+
+**Supported Header Types**:
+- Text (max 60 characters)
+- Image (from URL or media ID)
+- Video (from URL or media ID)
+- Document (from URL or media ID)
+
+**Character Limits**:
+- Header text: 60 characters
+- Body text: 1024 characters
+- Button text: 20 characters
+- Footer text: 60 characters
+
 ### Template Messages
 
 ```typescript
@@ -650,6 +707,261 @@ const qualityBestPractices = {
 - [Official Messaging Limits Documentation](https://developers.facebook.com/docs/whatsapp/messaging-limits)
 - [Message Quality Guidelines](https://developers.facebook.com/docs/whatsapp/messaging-limits#message-quality)
 - [Business Verification Guide](https://www.facebook.com/business/help/2058515294227817)
+
+---
+
+## 🏢 Business Profile Management
+
+Manage your WhatsApp Business profile information including business description, contact details, address, category, and profile picture.
+
+### Get Business Profile
+
+Retrieve your current business profile information:
+
+```typescript
+// Get all profile fields
+const profile = await client.account.getBusinessProfile();
+
+const data = profile.data[0];
+console.log('About:', data.about);
+console.log('Address:', data.address);
+console.log('Email:', data.email);
+console.log('Websites:', data.websites);
+console.log('Vertical:', data.vertical);
+console.log('Profile Picture:', data.profile_picture_url);
+
+// Get specific fields only
+const basicProfile = await client.account.getBusinessProfile([
+  'about',
+  'email',
+  'websites'
+]);
+```
+
+**Available Fields**:
+- `about` - Business description (max 139 characters)
+- `address` - Business address (max 256 characters)
+- `description` - Extended description (max 512 characters)
+- `email` - Contact email (max 128 characters)
+- `messaging_product` - Always "whatsapp"
+- `profile_picture_url` - Profile picture URL (read-only)
+- `vertical` - Business category
+- `websites` - Array of website URLs (max 2)
+
+### Update Business Profile
+
+Update your business profile information:
+
+```typescript
+// Update complete profile
+await client.account.updateBusinessProfile({
+  messaging_product: 'whatsapp',
+  about: 'Your friendly neighborhood business',
+  address: '123 Main St, City, Country',
+  description: 'We provide excellent service with quality products for all your needs.',
+  email: 'contact@business.com',
+  vertical: 'RETAIL',
+  websites: ['https://business.com', 'https://shop.business.com']
+});
+
+// Update partial profile
+await client.account.updateBusinessProfile({
+  messaging_product: 'whatsapp',
+  about: 'New business description',
+  email: 'newemail@business.com'
+});
+```
+
+**Field Limits**:
+- `about`: Maximum 139 characters
+- `address`: Maximum 256 characters
+- `description`: Maximum 512 characters
+- `email`: Maximum 128 characters, must be valid email format
+- `websites`: Maximum 2 URLs
+
+### Business Categories (Verticals)
+
+Valid business category options:
+
+| Category | Description |
+|----------|-------------|
+| `AUTOMOTIVE` | Automotive industry |
+| `BEAUTY` | Beauty & cosmetics |
+| `APPAREL` | Clothing & fashion |
+| `EDU` | Education |
+| `ENTERTAIN` | Entertainment |
+| `EVENT_PLAN` | Event planning |
+| `FINANCE` | Financial services |
+| `GROCERY` | Grocery & food retail |
+| `GOVT` | Government services |
+| `HOTEL` | Hotels & lodging |
+| `HEALTH` | Healthcare |
+| `NONPROFIT` | Non-profit organizations |
+| `PROF_SERVICES` | Professional services |
+| `RETAIL` | Retail & e-commerce |
+| `TRAVEL` | Travel & tourism |
+| `RESTAURANT` | Restaurants & dining |
+| `OTHER` | Other industries |
+
+### Update Profile Picture
+
+To update your profile picture, you must first upload the image via the Media API:
+
+```typescript
+// Step 1: Upload profile picture
+const mediaBuffer = fs.readFileSync('profile-picture.jpg');
+const uploadResult = await client.media.upload(mediaBuffer, 'image/jpeg');
+
+// Step 2: Update profile with media handle
+await client.account.updateBusinessProfile({
+  messaging_product: 'whatsapp',
+  profile_picture_handle: uploadResult.id
+});
+
+// Step 3: Verify the update
+const updatedProfile = await client.account.getBusinessProfile(['profile_picture_url']);
+console.log('New profile picture:', updatedProfile.data[0].profile_picture_url);
+```
+
+### Best Practices
+
+1. **Keep Information Current**: Regularly update your business profile to reflect accurate information
+2. **Use Appropriate Category**: Select the vertical that best represents your business
+3. **Professional Description**: Use clear, professional language in your about and description fields
+4. **Valid Contact Information**: Ensure email and website URLs are valid and accessible
+5. **Quality Profile Picture**: Use a high-quality, professional image for your profile picture
+6. **Character Limits**: Stay within field character limits to avoid validation errors
+
+### Related Resources
+
+- [Business Profile API Documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles)
+- [WhatsApp Business Profile Guidelines](https://www.facebook.com/business/help/757569725593362)
+
+---
+
+## 💬 Conversational Components
+
+Configure in-chat features to make it easier for WhatsApp users to interact with your business. Includes welcome messages, ice breakers (prompts), and slash commands.
+
+### Configure Welcome Messages
+
+Enable webhook notifications when users open chat for the first time:
+
+```typescript
+await client.account.configureConversationalAutomation({
+  enableWelcomeMessage: true
+});
+```
+
+**Note**: Welcome messages trigger a `request_welcome` webhook event that you can handle to send custom welcome messages.
+
+### Configure Ice Breakers (Prompts)
+
+Set up tappable text strings that appear when users first chat with you:
+
+```typescript
+await client.account.configureConversationalAutomation({
+  prompts: [
+    'Book a flight',
+    'Plan a vacation',
+    'Find hotels',
+    'Rent a car'
+  ]
+});
+```
+
+**Limits**:
+- Maximum 4 prompts
+- Maximum 80 characters per prompt
+- Emojis not supported
+
+### Configure Slash Commands
+
+Set up commands that users can access by typing "/" in the chat:
+
+```typescript
+await client.account.configureConversationalAutomation({
+  commands: [
+    {
+      commandName: 'tickets',
+      commandDescription: 'Book flight tickets'
+    },
+    {
+      commandName: 'hotel',
+      commandDescription: 'Find and book hotels'
+    },
+    {
+      commandName: 'help',
+      commandDescription: 'Get help with our services'
+    }
+  ]
+});
+```
+
+**Limits**:
+- Maximum 30 commands
+- Command name: Maximum 32 characters
+- Command description: Maximum 256 characters
+- Emojis not supported
+
+### Configure All Features Together
+
+You can configure multiple features in a single call:
+
+```typescript
+await client.account.configureConversationalAutomation({
+  enableWelcomeMessage: true,
+  prompts: [
+    'Book a flight',
+    'Plan a vacation'
+  ],
+  commands: [
+    {
+      commandName: 'tickets',
+      commandDescription: 'Book flight tickets'
+    },
+    {
+      commandName: 'hotel',
+      commandDescription: 'Find and book hotels'
+    }
+  ]
+});
+```
+
+### Get Current Configuration
+
+Retrieve the current conversational components configuration:
+
+```typescript
+const config = await client.account.getConversationalAutomation();
+
+console.log('Welcome enabled:', config.conversational_automation.enable_welcome_message);
+console.log('Prompts:', config.conversational_automation.prompts);
+console.log('Commands:', config.conversational_automation.commands);
+
+// List all prompts
+config.conversational_automation.prompts?.forEach((prompt, index) => {
+  console.log(`Prompt ${index + 1}: ${prompt}`);
+});
+
+// List all commands
+config.conversational_automation.commands?.forEach((cmd) => {
+  console.log(`/${cmd.command_name}: ${cmd.command_description}`);
+});
+```
+
+### Best Practices
+
+1. **Clear Prompts**: Use concise, action-oriented prompts that clearly indicate what users can do
+2. **Descriptive Commands**: Write command descriptions that explain exactly what the command does
+3. **Logical Organization**: Group related commands together with consistent naming
+4. **Test Thoroughly**: Test all prompts and commands to ensure they work as expected
+5. **Update Regularly**: Keep prompts and commands updated based on user feedback and business needs
+
+### Related Resources
+
+- [Conversational Components Documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/phone-numbers/conversational-components)
+- [Welcome Messages Guide](https://developers.facebook.com/docs/whatsapp/cloud-api/phone-numbers/conversational-components#welcome-messages)
 
 ---
 

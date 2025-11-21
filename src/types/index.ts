@@ -43,6 +43,9 @@ export type {
   TemplateParameter,
   TemplateComponent,
   SendTemplateParams,
+  InteractiveCTAHeader,
+  InteractiveCTAAction,
+  SendInteractiveCTAParams,
 } from './messages.js';
 
 // Response types
@@ -89,4 +92,16 @@ export type {
 export type { MediaType, MediaFile, MediaMetadata } from './media.js';
 
 // Account types
-export type { MessagingLimitTier, MessagingLimitResponse } from './account.js';
+export type {
+  MessagingLimitTier,
+  MessagingLimitResponse,
+  BusinessVertical,
+  BusinessProfile,
+  UpdateBusinessProfileParams,
+  BusinessProfileResponse,
+  UpdateBusinessProfileResponse,
+  ConversationalCommand,
+  ConversationalAutomationConfig,
+  ConfigureConversationalAutomationParams,
+  ConversationalAutomationResponse,
+} from './account.js';

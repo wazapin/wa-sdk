@@ -276,3 +276,52 @@ export interface SendTemplateParams {
     components?: TemplateComponent[];
   };
 }
+
+/**
+ * Interactive CTA header options
+ */
+export type InteractiveCTAHeader =
+  | { type: 'text'; text: string }
+  | { type: 'image'; image: MediaInput }
+  | { type: 'video'; video: MediaInput }
+  | { type: 'document'; document: MediaInput };
+
+/**
+ * Interactive CTA action parameters
+ */
+export interface InteractiveCTAAction {
+  /**
+   * Button display text (max 20 characters)
+   */
+  displayText: string;
+  /**
+   * Target URL to open in browser
+   */
+  url: string;
+}
+
+/**
+ * Parameters for sending interactive CTA URL button message
+ */
+export interface SendInteractiveCTAParams {
+  /**
+   * Recipient phone number
+   */
+  to: string;
+  /**
+   * Optional header (text, image, video, or document)
+   */
+  header?: InteractiveCTAHeader;
+  /**
+   * Body text (max 1024 characters)
+   */
+  body: string;
+  /**
+   * CTA button action
+   */
+  action: InteractiveCTAAction;
+  /**
+   * Optional footer text (max 60 characters)
+   */
+  footer?: string;
+}

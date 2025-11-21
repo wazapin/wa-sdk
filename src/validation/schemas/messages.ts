@@ -385,3 +385,44 @@ export const sendTemplateParamsSchema = z.object({
     components: z.array(templateComponentSchema).optional(),
   }),
 });
+
+/**
+ * Interactive CTA header schema
+ */
+export const interactiveCTAHeaderSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('text'),
+    text: z.string().min(1, 'Header text is required').max(60, 'Header text too long (max 60 characters)'),
+  }),
+  z.object({
+    type: z.literal('image'),
+    image: mediaInputSchema,
+  }),
+  z.object({
+    type: z.literal('video'),
+    video: mediaInputSchema,
+  }),
+  z.object({
+    type: z.literal('document'),
+    document: mediaInputSchema,
+  }),
+]);
+
+/**
+ * Interactive CTA action schema
+ */
+export const interactiveCTAActionSchema = z.object({
+  displayText: z.string().min(1, 'Button text is required').max(20, 'Button text too long (max 20 characters)'),
+  url: z.string().url('URL must be valid'),
+});
+
+/**
+ * Interactive CTA URL message parameters schema
+ */
+export const sendInteractiveCTAParamsSchema = z.object({
+  to: phoneNumberSchema,
+  header: interactiveCTAHeaderSchema.optional(),
+  body: z.string().min(1, 'Body text is required').max(1024, 'Body text too long (max 1024 characters)'),
+  action: interactiveCTAActionSchema,
+  footer: z.string().max(60, 'Footer text too long (max 60 characters)').optional(),
+});
