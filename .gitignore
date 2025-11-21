@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Documentation and test artifacts
+docs/
+repo-test/
+.docsrc
+
+# AI and development artifacts
+.kiro/
+refference-api.json
+
+# Temporary files
+*.tmp
+.cache/
