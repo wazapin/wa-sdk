@@ -65,4 +65,8 @@ export {
   updateBusinessProfileParamsSchema,
   businessProfileResponseSchema,
   updateBusinessProfileResponseSchema,
+  conversationalCommandSchema,
+  configureConversationalAutomationParamsSchema,
+  conversationalAutomationConfigSchema,
+  conversationalAutomationResponseSchema,
 } from './account.js';

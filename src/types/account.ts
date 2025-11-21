@@ -177,3 +177,78 @@ export interface UpdateBusinessProfileResponse {
    */
   success: boolean;
 }
+
+/**
+ * Conversational command structure
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/phone-numbers/conversational-components
+ */
+export interface ConversationalCommand {
+  /**
+   * Command name (max 32 characters)
+   */
+  commandName: string;
+  /**
+   * Command description (max 256 characters)
+   */
+  commandDescription: string;
+}
+
+/**
+ * Conversational automation configuration (API response format)
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/phone-numbers/conversational-components
+ */
+export interface ConversationalAutomationConfig {
+  /**
+   * Enable welcome message notifications
+   */
+  enable_welcome_message?: boolean;
+  /**
+   * Ice breaker prompts (max 4, each max 80 chars)
+   */
+  prompts?: string[];
+  /**
+   * Slash commands (max 30) - API returns snake_case
+   */
+  commands?: Array<{
+    command_name: string;
+    command_description: string;
+  }>;
+}
+
+/**
+ * Parameters for configuring conversational automation
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/phone-numbers/conversational-components
+ */
+export interface ConfigureConversationalAutomationParams {
+  /**
+   * Enable welcome message notifications
+   */
+  enableWelcomeMessage?: boolean;
+  /**
+   * Ice breaker prompts (max 4, each max 80 chars)
+   */
+  prompts?: string[];
+  /**
+   * Slash commands (max 30)
+   */
+  commands?: ConversationalCommand[];
+}
+
+/**
+ * Response from getting conversational automation configuration
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/phone-numbers/conversational-components
+ */
+export interface ConversationalAutomationResponse {
+  /**
+   * Current conversational automation configuration
+   */
+  conversational_automation: ConversationalAutomationConfig;
+  /**
+   * Phone number ID
+   */
+  id: string;
+}

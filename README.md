@@ -839,6 +839,132 @@ console.log('New profile picture:', updatedProfile.data[0].profile_picture_url);
 
 ---
 
+## 💬 Conversational Components
+
+Configure in-chat features to make it easier for WhatsApp users to interact with your business. Includes welcome messages, ice breakers (prompts), and slash commands.
+
+### Configure Welcome Messages
+
+Enable webhook notifications when users open chat for the first time:
+
+```typescript
+await client.account.configureConversationalAutomation({
+  enableWelcomeMessage: true
+});
+```
+
+**Note**: Welcome messages trigger a `request_welcome` webhook event that you can handle to send custom welcome messages.
+
+### Configure Ice Breakers (Prompts)
+
+Set up tappable text strings that appear when users first chat with you:
+
+```typescript
+await client.account.configureConversationalAutomation({
+  prompts: [
+    'Book a flight',
+    'Plan a vacation',
+    'Find hotels',
+    'Rent a car'
+  ]
+});
+```
+
+**Limits**:
+- Maximum 4 prompts
+- Maximum 80 characters per prompt
+- Emojis not supported
+
+### Configure Slash Commands
+
+Set up commands that users can access by typing "/" in the chat:
+
+```typescript
+await client.account.configureConversationalAutomation({
+  commands: [
+    {
+      commandName: 'tickets',
+      commandDescription: 'Book flight tickets'
+    },
+    {
+      commandName: 'hotel',
+      commandDescription: 'Find and book hotels'
+    },
+    {
+      commandName: 'help',
+      commandDescription: 'Get help with our services'
+    }
+  ]
+});
+```
+
+**Limits**:
+- Maximum 30 commands
+- Command name: Maximum 32 characters
+- Command description: Maximum 256 characters
+- Emojis not supported
+
+### Configure All Features Together
+
+You can configure multiple features in a single call:
+
+```typescript
+await client.account.configureConversationalAutomation({
+  enableWelcomeMessage: true,
+  prompts: [
+    'Book a flight',
+    'Plan a vacation'
+  ],
+  commands: [
+    {
+      commandName: 'tickets',
+      commandDescription: 'Book flight tickets'
+    },
+    {
+      commandName: 'hotel',
+      commandDescription: 'Find and book hotels'
+    }
+  ]
+});
+```
+
+### Get Current Configuration
+
+Retrieve the current conversational components configuration:
+
+```typescript
+const config = await client.account.getConversationalAutomation();
+
+console.log('Welcome enabled:', config.conversational_automation.enable_welcome_message);
+console.log('Prompts:', config.conversational_automation.prompts);
+console.log('Commands:', config.conversational_automation.commands);
+
+// List all prompts
+config.conversational_automation.prompts?.forEach((prompt, index) => {
+  console.log(`Prompt ${index + 1}: ${prompt}`);
+});
+
+// List all commands
+config.conversational_automation.commands?.forEach((cmd) => {
+  console.log(`/${cmd.command_name}: ${cmd.command_description}`);
+});
+```
+
+### Best Practices
+
+1. **Clear Prompts**: Use concise, action-oriented prompts that clearly indicate what users can do
+2. **Descriptive Commands**: Write command descriptions that explain exactly what the command does
+3. **Logical Organization**: Group related commands together with consistent naming
+4. **Test Thoroughly**: Test all prompts and commands to ensure they work as expected
+5. **Update Regularly**: Keep prompts and commands updated based on user feedback and business needs
+
+### Related Resources
+
+- [Conversational Components Documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/phone-numbers/conversational-components)
+- [Welcome Messages Guide](https://developers.facebook.com/docs/whatsapp/cloud-api/phone-numbers/conversational-components#welcome-messages)
+
+---
+
 ## 🔧 Error Handling
 
 The SDK provides typed error classes for different scenarios:

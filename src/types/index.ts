@@ -100,4 +100,8 @@ export type {
   UpdateBusinessProfileParams,
   BusinessProfileResponse,
   UpdateBusinessProfileResponse,
+  ConversationalCommand,
+  ConversationalAutomationConfig,
+  ConfigureConversationalAutomationParams,
+  ConversationalAutomationResponse,
 } from './account.js';

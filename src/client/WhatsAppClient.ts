@@ -31,6 +31,8 @@ import type {
   BusinessProfileResponse,
   UpdateBusinessProfileParams,
   UpdateBusinessProfileResponse,
+  ConfigureConversationalAutomationParams,
+  ConversationalAutomationResponse,
 } from '../types/account.js';
 import type { WebhookEvent } from '../types/webhooks.js';
 
@@ -68,7 +70,13 @@ import { parseWebhook } from '../webhooks/parser.js';
 import { verifyWebhookSignature } from '../webhooks/verifier.js';
 
 // Import account functions
-import { getMessagingLimit, getBusinessProfile, updateBusinessProfile } from '../account/index.js';
+import {
+  getMessagingLimit,
+  getBusinessProfile,
+  updateBusinessProfile,
+  configureConversationalAutomation,
+  getConversationalAutomation,
+} from '../account/index.js';
 
 /**
  * WhatsApp Business Cloud API Client
@@ -130,6 +138,10 @@ export class WhatsAppClient {
     updateBusinessProfile: (
       params: UpdateBusinessProfileParams
     ) => Promise<UpdateBusinessProfileResponse>;
+    configureConversationalAutomation: (
+      config: ConfigureConversationalAutomationParams
+    ) => Promise<{ success: boolean }>;
+    getConversationalAutomation: () => Promise<ConversationalAutomationResponse>;
   };
 
   constructor(config: WhatsAppClientConfig) {
@@ -233,6 +245,14 @@ export class WhatsAppClient {
       updateBusinessProfile: (params) =>
         this.withRetryWrapper(() =>
           updateBusinessProfile(this.client, this.phoneNumberId, params, this.validator)
+        ),
+      configureConversationalAutomation: (config) =>
+        this.withRetryWrapper(() =>
+          configureConversationalAutomation(this.client, this.phoneNumberId, config, this.validator)
+        ),
+      getConversationalAutomation: () =>
+        this.withRetryWrapper(() =>
+          getConversationalAutomation(this.client, this.phoneNumberId, this.validator)
         ),
     };
   }

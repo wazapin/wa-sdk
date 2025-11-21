@@ -87,3 +87,40 @@ export const businessProfileResponseSchema = z.object({
 export const updateBusinessProfileResponseSchema = z.object({
   success: z.boolean(),
 });
+
+/**
+ * Conversational command validation schema
+ */
+export const conversationalCommandSchema = z.object({
+  commandName: z.string().min(1, 'Command name is required').max(32, 'Command name too long (max 32 characters)'),
+  commandDescription: z.string().min(1, 'Command description is required').max(256, 'Command description too long (max 256 characters)'),
+});
+
+/**
+ * Configure conversational automation params validation schema
+ */
+export const configureConversationalAutomationParamsSchema = z.object({
+  enableWelcomeMessage: z.boolean().optional(),
+  prompts: z.array(z.string().max(80, 'Prompt too long (max 80 characters)')).max(4, 'Maximum 4 prompts allowed').optional(),
+  commands: z.array(conversationalCommandSchema).max(30, 'Maximum 30 commands allowed').optional(),
+});
+
+/**
+ * Conversational automation config validation schema
+ */
+export const conversationalAutomationConfigSchema = z.object({
+  enable_welcome_message: z.boolean().optional(),
+  prompts: z.array(z.string()).optional(),
+  commands: z.array(z.object({
+    command_name: z.string(),
+    command_description: z.string(),
+  })).optional(),
+});
+
+/**
+ * Conversational automation response validation schema
+ */
+export const conversationalAutomationResponseSchema = z.object({
+  conversational_automation: conversationalAutomationConfigSchema,
+  id: z.string(),
+});
