@@ -43,6 +43,9 @@ export type {
   TemplateParameter,
   TemplateComponent,
   SendTemplateParams,
+  InteractiveCTAHeader,
+  InteractiveCTAAction,
+  SendInteractiveCTAParams,
 } from './messages.js';
 
 // Response types

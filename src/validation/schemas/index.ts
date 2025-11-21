@@ -36,6 +36,9 @@ export {
   templateParameterSchema,
   templateComponentSchema,
   sendTemplateParamsSchema,
+  interactiveCTAHeaderSchema,
+  interactiveCTAActionSchema,
+  sendInteractiveCTAParamsSchema,
 } from './messages.js';
 
 // Webhook schemas

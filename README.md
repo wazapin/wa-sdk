@@ -323,6 +323,63 @@ await client.messages.sendInteractiveList({
 });
 ```
 
+### Interactive Messages - CTA URL Buttons
+
+Send messages with call-to-action URL buttons that provide a cleaner, more professional appearance than raw URLs:
+
+```typescript
+// Basic CTA message
+await client.messages.sendInteractiveCTA({
+  to: '+1234567890',
+  body: 'Check out our new products!',
+  action: {
+    displayText: 'View Products',
+    url: 'https://example.com/products'
+  }
+});
+
+// CTA with image header and footer
+await client.messages.sendInteractiveCTA({
+  to: '+1234567890',
+  header: {
+    type: 'image',
+    image: { link: 'https://example.com/banner.jpg' }
+  },
+  body: 'Tap the button below to see available dates.',
+  action: {
+    displayText: 'See Dates',
+    url: 'https://example.com/calendar?ref=whatsapp'
+  },
+  footer: 'Dates subject to change.'
+});
+
+// CTA with video header
+await client.messages.sendInteractiveCTA({
+  to: '+1234567890',
+  header: {
+    type: 'video',
+    video: { link: 'https://example.com/promo.mp4' }
+  },
+  body: 'Watch our latest promotional video!',
+  action: {
+    displayText: 'Learn More',
+    url: 'https://example.com/about'
+  }
+});
+```
+
+**Supported Header Types**:
+- Text (max 60 characters)
+- Image (from URL or media ID)
+- Video (from URL or media ID)
+- Document (from URL or media ID)
+
+**Character Limits**:
+- Header text: 60 characters
+- Body text: 1024 characters
+- Button text: 20 characters
+- Footer text: 60 characters
+
 ### Template Messages
 
 ```typescript

@@ -3,13 +3,19 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { sendInteractiveButtons, sendInteractiveList, sendInteractiveCarousel } from './interactive.js';
+import {
+  sendInteractiveButtons,
+  sendInteractiveList,
+  sendInteractiveCarousel,
+  sendInteractiveCTA,
+} from './interactive.js';
 import { HTTPClient } from '../client/http.js';
 import { Validator } from '../validation/validator.js';
 import type {
   SendInteractiveButtonsParams,
   SendInteractiveListParams,
   SendInteractiveCarouselParams,
+  SendInteractiveCTAParams,
 } from '../types/messages.js';
 import type { MessageResponse } from '../types/responses.js';
 
@@ -622,6 +628,237 @@ describe('Interactive Messages', () => {
       await sendInteractiveCarousel(mockClient, 'phone123', params, validator);
 
       expect(mockPost).toHaveBeenCalled();
+    });
+  });
+
+  describe('sendInteractiveCTA', () => {
+    it('should send CTA message with text header', async () => {
+      const params: SendInteractiveCTAParams = {
+        to: '+1234567890',
+        header: { type: 'text', text: 'Special Offer!' },
+        body: 'Check out our new products!',
+        action: {
+          displayText: 'View Products',
+          url: 'https://example.com/products',
+        },
+        footer: 'Limited time offer',
+      };
+
+      const result = await sendInteractiveCTA(mockClient, 'phone123', params);
+
+      expect(result).toEqual(mockResponse);
+      expect(mockPost).toHaveBeenCalledWith('phone123/messages', {
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: '+1234567890',
+        type: 'interactive',
+        interactive: {
+          type: 'cta_url',
+          header: {
+            type: 'text',
+            text: 'Special Offer!',
+          },
+          body: { text: 'Check out our new products!' },
+          action: {
+            name: 'cta_url',
+            parameters: {
+              display_text: 'View Products',
+              url: 'https://example.com/products',
+            },
+          },
+          footer: { text: 'Limited time offer' },
+        },
+      });
+    });
+
+    it('should send CTA message with image header', async () => {
+      const params: SendInteractiveCTAParams = {
+        to: '+1234567890',
+        header: {
+          type: 'image',
+          image: { link: 'https://example.com/banner.jpg' },
+        },
+        body: 'Tap to see available dates.',
+        action: {
+          displayText: 'See Dates',
+          url: 'https://example.com/calendar',
+        },
+      };
+
+      const result = await sendInteractiveCTA(mockClient, 'phone123', params);
+
+      expect(result).toEqual(mockResponse);
+      expect(mockPost).toHaveBeenCalledWith('phone123/messages', {
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: '+1234567890',
+        type: 'interactive',
+        interactive: {
+          type: 'cta_url',
+          header: {
+            type: 'image',
+            image: { link: 'https://example.com/banner.jpg' },
+          },
+          body: { text: 'Tap to see available dates.' },
+          action: {
+            name: 'cta_url',
+            parameters: {
+              display_text: 'See Dates',
+              url: 'https://example.com/calendar',
+            },
+          },
+        },
+      });
+    });
+
+    it('should send CTA message with video header', async () => {
+      const params: SendInteractiveCTAParams = {
+        to: '+1234567890',
+        header: {
+          type: 'video',
+          video: { link: 'https://example.com/promo.mp4' },
+        },
+        body: 'Watch our latest video!',
+        action: {
+          displayText: 'Learn More',
+          url: 'https://example.com/about',
+        },
+      };
+
+      const result = await sendInteractiveCTA(mockClient, 'phone123', params);
+
+      expect(result).toEqual(mockResponse);
+      expect(mockPost).toHaveBeenCalledWith('phone123/messages', expect.objectContaining({
+        type: 'interactive',
+        interactive: expect.objectContaining({
+          type: 'cta_url',
+          header: {
+            type: 'video',
+            video: { link: 'https://example.com/promo.mp4' },
+          },
+        }),
+      }));
+    });
+
+    it('should send CTA message with document header', async () => {
+      const params: SendInteractiveCTAParams = {
+        to: '+1234567890',
+        header: {
+          type: 'document',
+          document: { link: 'https://example.com/brochure.pdf' },
+        },
+        body: 'View our product catalog.',
+        action: {
+          displayText: 'Get Catalog',
+          url: 'https://example.com/catalog',
+        },
+      };
+
+      const result = await sendInteractiveCTA(mockClient, 'phone123', params);
+
+      expect(result).toEqual(mockResponse);
+      expect(mockPost).toHaveBeenCalledWith('phone123/messages', expect.objectContaining({
+        interactive: expect.objectContaining({
+          type: 'cta_url',
+          header: {
+            type: 'document',
+            document: { link: 'https://example.com/brochure.pdf' },
+          },
+        }),
+      }));
+    });
+
+    it('should send CTA message without header', async () => {
+      const params: SendInteractiveCTAParams = {
+        to: '+1234567890',
+        body: 'Simple CTA message',
+        action: {
+          displayText: 'Click Here',
+          url: 'https://example.com',
+        },
+      };
+
+      const result = await sendInteractiveCTA(mockClient, 'phone123', params);
+
+      expect(result).toEqual(mockResponse);
+      const call = mockPost.mock.calls[0][1] as Record<string, unknown>;
+      const interactive = call.interactive as Record<string, unknown>;
+      expect(interactive.header).toBeUndefined();
+    });
+
+    it('should send CTA message with footer', async () => {
+      const params: SendInteractiveCTAParams = {
+        to: '+1234567890',
+        body: 'Message with footer',
+        action: {
+          displayText: 'Click Here',
+          url: 'https://example.com',
+        },
+        footer: 'Terms apply',
+      };
+
+      const result = await sendInteractiveCTA(mockClient, 'phone123', params);
+
+      expect(result).toEqual(mockResponse);
+      expect(mockPost).toHaveBeenCalledWith('phone123/messages', expect.objectContaining({
+        interactive: expect.objectContaining({
+          footer: { text: 'Terms apply' },
+        }),
+      }));
+    });
+
+    it('should send CTA message without footer', async () => {
+      const params: SendInteractiveCTAParams = {
+        to: '+1234567890',
+        body: 'Message without footer',
+        action: {
+          displayText: 'Click Here',
+          url: 'https://example.com',
+        },
+      };
+
+      const result = await sendInteractiveCTA(mockClient, 'phone123', params);
+
+      expect(result).toEqual(mockResponse);
+      const call = mockPost.mock.calls[0][1] as Record<string, unknown>;
+      const interactive = call.interactive as Record<string, unknown>;
+      expect(interactive.footer).toBeUndefined();
+    });
+
+    it('should validate body max 1024 characters', () => {
+      const longBody = 'a'.repeat(1025);
+      expect(longBody.length).toBe(1025);
+    });
+
+    it('should validate button label max 20 characters', () => {
+      const longLabel = 'a'.repeat(21);
+      expect(longLabel.length).toBe(21);
+    });
+
+    it('should validate header text max 60 characters', () => {
+      const longHeader = 'a'.repeat(61);
+      expect(longHeader.length).toBe(61);
+    });
+
+    it('should validate footer text max 60 characters', () => {
+      const longFooter = 'a'.repeat(61);
+      expect(longFooter.length).toBe(61);
+    });
+
+    it('should handle API failures', async () => {
+      const error = new Error('API Error');
+      mockPost.mockRejectedValue(error);
+
+      const params: SendInteractiveCTAParams = {
+        to: '+1234567890',
+        body: 'Test',
+        action: {
+          displayText: 'Click',
+          url: 'https://example.com',
+        },
+      };
+
+      await expect(sendInteractiveCTA(mockClient, 'phone123', params)).rejects.toThrow('API Error');
     });
   });
 });

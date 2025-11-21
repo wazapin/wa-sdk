@@ -16,6 +16,7 @@ import type {
   SendInteractiveButtonsParams,
   SendInteractiveListParams,
   SendInteractiveCarouselParams,
+  SendInteractiveCTAParams,
   SendTemplateParams,
 } from '../types/messages.js';
 import type {
@@ -50,6 +51,7 @@ import {
   sendInteractiveButtons,
   sendInteractiveList,
   sendInteractiveCarousel,
+  sendInteractiveCTA,
 } from '../messages/interactive.js';
 import { sendTemplate } from '../messages/template.js';
 import { sendLocation } from '../messages/location.js';
@@ -98,6 +100,7 @@ export class WhatsAppClient {
       params: SendInteractiveCarouselParams
     ) => Promise<MessageResponse>;
     sendTemplate: (params: SendTemplateParams) => Promise<MessageResponse>;
+    sendInteractiveCTA: (params: SendInteractiveCTAParams) => Promise<MessageResponse>;
     markAsRead: (messageId: string) => Promise<SuccessResponse>;
   };
 
@@ -193,6 +196,10 @@ export class WhatsAppClient {
       sendTemplate: (params) =>
         this.withRetryWrapper(() =>
           sendTemplate(this.client, this.phoneNumberId, params, this.validator)
+        ),
+      sendInteractiveCTA: (params) =>
+        this.withRetryWrapper(() =>
+          sendInteractiveCTA(this.client, this.phoneNumberId, params, this.validator)
         ),
       markAsRead: (messageId) =>
         this.withRetryWrapper(() => markAsRead(this.client, this.phoneNumberId, messageId)),
