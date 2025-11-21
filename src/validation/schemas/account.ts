@@ -27,7 +27,7 @@ export const messagingLimitResponseSchema = z.object({
  * Business vertical validation schema
  */
 export const businessVerticalSchema = z.enum([
-  'AUTOMOTIVE',
+  'AUTO',
   'BEAUTY',
   'APPAREL',
   'EDU',
@@ -44,6 +44,8 @@ export const businessVerticalSchema = z.enum([
   'TRAVEL',
   'RESTAURANT',
   'OTHER',
+  'UNDEFINED',
+  'NOT_A_BIZ',
 ]);
 
 /**

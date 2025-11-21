@@ -42,7 +42,7 @@ export interface MessagingLimitResponse {
  * @see https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles
  */
 export type BusinessVertical =
-  | 'AUTOMOTIVE'
+  | 'AUTO'
   | 'BEAUTY'
   | 'APPAREL'
   | 'EDU'
@@ -58,7 +58,9 @@ export type BusinessVertical =
   | 'RETAIL'
   | 'TRAVEL'
   | 'RESTAURANT'
-  | 'OTHER';
+  | 'OTHER'
+  | 'UNDEFINED'
+  | 'NOT_A_BIZ';
 
 /**
  * Business profile information
