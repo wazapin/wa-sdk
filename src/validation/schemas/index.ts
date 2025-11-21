@@ -54,4 +54,12 @@ export {
 } from './webhooks.js';
 
 // Account schemas
-export { messagingLimitTierSchema, messagingLimitResponseSchema } from './account.js';
+export {
+  messagingLimitTierSchema,
+  messagingLimitResponseSchema,
+  businessVerticalSchema,
+  businessProfileSchema,
+  updateBusinessProfileParamsSchema,
+  businessProfileResponseSchema,
+  updateBusinessProfileResponseSchema,
+} from './account.js';

@@ -35,3 +35,145 @@ export interface MessagingLimitResponse {
    */
   id: string;
 }
+
+/**
+ * Business category/vertical options for WhatsApp Business profiles
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles
+ */
+export type BusinessVertical =
+  | 'AUTOMOTIVE'
+  | 'BEAUTY'
+  | 'APPAREL'
+  | 'EDU'
+  | 'ENTERTAIN'
+  | 'EVENT_PLAN'
+  | 'FINANCE'
+  | 'GROCERY'
+  | 'GOVT'
+  | 'HOTEL'
+  | 'HEALTH'
+  | 'NONPROFIT'
+  | 'PROF_SERVICES'
+  | 'RETAIL'
+  | 'TRAVEL'
+  | 'RESTAURANT'
+  | 'OTHER';
+
+/**
+ * Business profile information
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles
+ */
+export interface BusinessProfile {
+  /**
+   * Business description (max 139 characters)
+   */
+  about?: string;
+  
+  /**
+   * Business address (max 256 characters)
+   */
+  address?: string;
+  
+  /**
+   * Extended business description (max 512 characters)
+   */
+  description?: string;
+  
+  /**
+   * Business email address (max 128 characters)
+   */
+  email?: string;
+  
+  /**
+   * Messaging product, always "whatsapp"
+   */
+  messaging_product: string;
+  
+  /**
+   * Business profile picture URL (read-only)
+   */
+  profile_picture_url?: string;
+  
+  /**
+   * Business category/industry
+   */
+  vertical?: BusinessVertical;
+  
+  /**
+   * Business websites (max 2)
+   */
+  websites?: string[];
+}
+
+/**
+ * Parameters for updating business profile
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles
+ */
+export interface UpdateBusinessProfileParams {
+  /**
+   * Messaging product, must be "whatsapp"
+   */
+  messaging_product: 'whatsapp';
+  
+  /**
+   * Business description (max 139 characters)
+   */
+  about?: string;
+  
+  /**
+   * Business address (max 256 characters)
+   */
+  address?: string;
+  
+  /**
+   * Extended business description (max 512 characters)
+   */
+  description?: string;
+  
+  /**
+   * Business email address (max 128 characters)
+   */
+  email?: string;
+  
+  /**
+   * Media handle ID for profile picture
+   */
+  profile_picture_handle?: string;
+  
+  /**
+   * Business category/industry
+   */
+  vertical?: BusinessVertical;
+  
+  /**
+   * Business websites (max 2)
+   */
+  websites?: string[];
+}
+
+/**
+ * Response from getting business profile
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles
+ */
+export interface BusinessProfileResponse {
+  /**
+   * Array containing business profile data
+   */
+  data: BusinessProfile[];
+}
+
+/**
+ * Response from updating business profile
+ * 
+ * @see https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles
+ */
+export interface UpdateBusinessProfileResponse {
+  /**
+   * Success status
+   */
+  success: boolean;
+}

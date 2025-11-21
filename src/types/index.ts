@@ -89,4 +89,12 @@ export type {
 export type { MediaType, MediaFile, MediaMetadata } from './media.js';
 
 // Account types
-export type { MessagingLimitTier, MessagingLimitResponse } from './account.js';
+export type {
+  MessagingLimitTier,
+  MessagingLimitResponse,
+  BusinessVertical,
+  BusinessProfile,
+  UpdateBusinessProfileParams,
+  BusinessProfileResponse,
+  UpdateBusinessProfileResponse,
+} from './account.js';

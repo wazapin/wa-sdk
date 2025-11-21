@@ -653,6 +653,135 @@ const qualityBestPractices = {
 
 ---
 
+## 🏢 Business Profile Management
+
+Manage your WhatsApp Business profile information including business description, contact details, address, category, and profile picture.
+
+### Get Business Profile
+
+Retrieve your current business profile information:
+
+```typescript
+// Get all profile fields
+const profile = await client.account.getBusinessProfile();
+
+const data = profile.data[0];
+console.log('About:', data.about);
+console.log('Address:', data.address);
+console.log('Email:', data.email);
+console.log('Websites:', data.websites);
+console.log('Vertical:', data.vertical);
+console.log('Profile Picture:', data.profile_picture_url);
+
+// Get specific fields only
+const basicProfile = await client.account.getBusinessProfile([
+  'about',
+  'email',
+  'websites'
+]);
+```
+
+**Available Fields**:
+- `about` - Business description (max 139 characters)
+- `address` - Business address (max 256 characters)
+- `description` - Extended description (max 512 characters)
+- `email` - Contact email (max 128 characters)
+- `messaging_product` - Always "whatsapp"
+- `profile_picture_url` - Profile picture URL (read-only)
+- `vertical` - Business category
+- `websites` - Array of website URLs (max 2)
+
+### Update Business Profile
+
+Update your business profile information:
+
+```typescript
+// Update complete profile
+await client.account.updateBusinessProfile({
+  messaging_product: 'whatsapp',
+  about: 'Your friendly neighborhood business',
+  address: '123 Main St, City, Country',
+  description: 'We provide excellent service with quality products for all your needs.',
+  email: 'contact@business.com',
+  vertical: 'RETAIL',
+  websites: ['https://business.com', 'https://shop.business.com']
+});
+
+// Update partial profile
+await client.account.updateBusinessProfile({
+  messaging_product: 'whatsapp',
+  about: 'New business description',
+  email: 'newemail@business.com'
+});
+```
+
+**Field Limits**:
+- `about`: Maximum 139 characters
+- `address`: Maximum 256 characters
+- `description`: Maximum 512 characters
+- `email`: Maximum 128 characters, must be valid email format
+- `websites`: Maximum 2 URLs
+
+### Business Categories (Verticals)
+
+Valid business category options:
+
+| Category | Description |
+|----------|-------------|
+| `AUTOMOTIVE` | Automotive industry |
+| `BEAUTY` | Beauty & cosmetics |
+| `APPAREL` | Clothing & fashion |
+| `EDU` | Education |
+| `ENTERTAIN` | Entertainment |
+| `EVENT_PLAN` | Event planning |
+| `FINANCE` | Financial services |
+| `GROCERY` | Grocery & food retail |
+| `GOVT` | Government services |
+| `HOTEL` | Hotels & lodging |
+| `HEALTH` | Healthcare |
+| `NONPROFIT` | Non-profit organizations |
+| `PROF_SERVICES` | Professional services |
+| `RETAIL` | Retail & e-commerce |
+| `TRAVEL` | Travel & tourism |
+| `RESTAURANT` | Restaurants & dining |
+| `OTHER` | Other industries |
+
+### Update Profile Picture
+
+To update your profile picture, you must first upload the image via the Media API:
+
+```typescript
+// Step 1: Upload profile picture
+const mediaBuffer = fs.readFileSync('profile-picture.jpg');
+const uploadResult = await client.media.upload(mediaBuffer, 'image/jpeg');
+
+// Step 2: Update profile with media handle
+await client.account.updateBusinessProfile({
+  messaging_product: 'whatsapp',
+  profile_picture_handle: uploadResult.id
+});
+
+// Step 3: Verify the update
+const updatedProfile = await client.account.getBusinessProfile(['profile_picture_url']);
+console.log('New profile picture:', updatedProfile.data[0].profile_picture_url);
+```
+
+### Best Practices
+
+1. **Keep Information Current**: Regularly update your business profile to reflect accurate information
+2. **Use Appropriate Category**: Select the vertical that best represents your business
+3. **Professional Description**: Use clear, professional language in your about and description fields
+4. **Valid Contact Information**: Ensure email and website URLs are valid and accessible
+5. **Quality Profile Picture**: Use a high-quality, professional image for your profile picture
+6. **Character Limits**: Stay within field character limits to avoid validation errors
+
+### Related Resources
+
+- [Business Profile API Documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles)
+- [WhatsApp Business Profile Guidelines](https://www.facebook.com/business/help/757569725593362)
+
+---
+
 ## 🔧 Error Handling
 
 The SDK provides typed error classes for different scenarios:

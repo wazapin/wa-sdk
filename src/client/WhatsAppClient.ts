@@ -25,7 +25,12 @@ import type {
   MediaDownloadResponse,
   MediaUrlResponse,
 } from '../types/responses.js';
-import type { MessagingLimitResponse } from '../types/account.js';
+import type {
+  MessagingLimitResponse,
+  BusinessProfileResponse,
+  UpdateBusinessProfileParams,
+  UpdateBusinessProfileResponse,
+} from '../types/account.js';
 import type { WebhookEvent } from '../types/webhooks.js';
 
 import { HTTPClient } from './http.js';
@@ -61,7 +66,7 @@ import { parseWebhook } from '../webhooks/parser.js';
 import { verifyWebhookSignature } from '../webhooks/verifier.js';
 
 // Import account functions
-import { getMessagingLimit } from '../account/index.js';
+import { getMessagingLimit, getBusinessProfile, updateBusinessProfile } from '../account/index.js';
 
 /**
  * WhatsApp Business Cloud API Client
@@ -118,6 +123,10 @@ export class WhatsAppClient {
    */
   public readonly account: {
     getMessagingLimit: () => Promise<MessagingLimitResponse>;
+    getBusinessProfile: (fields?: string[]) => Promise<BusinessProfileResponse>;
+    updateBusinessProfile: (
+      params: UpdateBusinessProfileParams
+    ) => Promise<UpdateBusinessProfileResponse>;
   };
 
   constructor(config: WhatsAppClientConfig) {
@@ -209,6 +218,14 @@ export class WhatsAppClient {
       getMessagingLimit: () =>
         this.withRetryWrapper(() =>
           getMessagingLimit(this.client, this.phoneNumberId, this.validator)
+        ),
+      getBusinessProfile: (fields) =>
+        this.withRetryWrapper(() =>
+          getBusinessProfile(this.client, this.phoneNumberId, fields, this.validator)
+        ),
+      updateBusinessProfile: (params) =>
+        this.withRetryWrapper(() =>
+          updateBusinessProfile(this.client, this.phoneNumberId, params, this.validator)
         ),
     };
   }
