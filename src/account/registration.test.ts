@@ -29,18 +29,17 @@ describe('RegistrationAPI', () => {
         success: true,
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await registrationAPI.registerPhone({
         messaging_product: 'whatsapp',
         pin: '123456',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/register`, {
-          messaging_product: 'whatsapp',
-          pin: '123456',
-        );
+        messaging_product: 'whatsapp',
+        pin: '123456',
+      });
       expect(result.success).toBe(true);
     });
 
@@ -49,18 +48,17 @@ describe('RegistrationAPI', () => {
         success: true,
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await registrationAPI.registerPhone({
         messaging_product: 'whatsapp',
         pin: '123456',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/register`, {
-          messaging_product: 'whatsapp',
-          pin: '123456',
-        );
+        messaging_product: 'whatsapp',
+        pin: '123456',
+      });
     });
 
     it('should use custom phone number ID if provided', async () => {
@@ -69,7 +67,7 @@ describe('RegistrationAPI', () => {
         success: true,
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await registrationAPI.registerPhone(
         {
@@ -80,9 +78,9 @@ describe('RegistrationAPI', () => {
       );
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${customPhoneNumberId}/register`, {
-          messaging_product: 'whatsapp',
-          pin: '123456',
-        );
+        messaging_product: 'whatsapp',
+        pin: '123456',
+      });
     });
 
     it('should accept 6-digit PIN', async () => {
@@ -90,7 +88,7 @@ describe('RegistrationAPI', () => {
         success: true,
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const pins = ['000000', '123456', '999999'];
 
@@ -98,14 +96,12 @@ describe('RegistrationAPI', () => {
         await registrationAPI.registerPhone({
           messaging_product: 'whatsapp',
           pin,
-    });
-
+        });
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
+          expect.any(String),
           expect.objectContaining({
-            data: expect.objectContaining({
-              pin,
-            }),
+            pin,
           }),
         );
       }
@@ -116,19 +112,17 @@ describe('RegistrationAPI', () => {
         success: true,
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await registrationAPI.registerPhone({
         messaging_product: 'whatsapp',
         pin: '123456',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
+        expect.any(String),
         expect.objectContaining({
-          data: expect.objectContaining({
-            messaging_product: 'whatsapp',
-          }),
+          messaging_product: 'whatsapp',
         }),
       );
     });
