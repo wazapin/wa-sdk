@@ -6,13 +6,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HTTPClient } from './http.js';
 import { APIError, NetworkError, RateLimitError } from '../types/errors.js';
 import type { WhatsAppClientConfig } from '../types/config.js';
+import { WazapinLogger } from '../utils/logger.js';
 
 describe('HTTPClient', () => {
   let config: WhatsAppClientConfig;
   let mockFetch: ReturnType<typeof vi.fn>;
+  let logger: WazapinLogger;
 
   beforeEach(() => {
     mockFetch = vi.fn();
+    logger = new WazapinLogger({ level: 'error' }); // Silent logger for tests
     config = {
       accessToken: 'test-token',
       phoneNumberId: '123456789',
@@ -31,7 +34,7 @@ describe('HTTPClient', () => {
         json: async () => mockResponse,
       });
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
       const result = await client.get('test-endpoint');
 
       expect(result).toEqual(mockResponse);
@@ -42,6 +45,8 @@ describe('HTTPClient', () => {
           headers: expect.objectContaining({
             Authorization: 'Bearer test-token',
             'Content-Type': 'application/json',
+            'User-Agent': expect.stringMatching(/^wazapin-wa\/\d+\.\d+\.\d+/),
+            'Wazapin-SDK-Version': expect.stringMatching(/^\d+\.\d+\.\d+$/),
           }),
         })
       );
@@ -55,7 +60,7 @@ describe('HTTPClient', () => {
         json: async () => mockResponse,
       });
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
       const result = await client.post('test-endpoint', requestBody);
 
       expect(result).toEqual(mockResponse);
@@ -75,7 +80,7 @@ describe('HTTPClient', () => {
         json: async () => mockResponse,
       });
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
       const result = await client.delete('test-endpoint');
 
       expect(result).toEqual(mockResponse);
@@ -105,7 +110,7 @@ describe('HTTPClient', () => {
         headers: new Map(),
       });
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
 
       await expect(client.get('test-endpoint')).rejects.toThrow(APIError);
       await expect(client.get('test-endpoint')).rejects.toThrow('Invalid parameter');
@@ -127,7 +132,7 @@ describe('HTTPClient', () => {
         headers: new Map(),
       });
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
 
       try {
         await client.get('test-endpoint');
@@ -159,7 +164,7 @@ describe('HTTPClient', () => {
         headers,
       });
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
 
       try {
         await client.get('test-endpoint');
@@ -182,7 +187,7 @@ describe('HTTPClient', () => {
         headers: new Map(),
       });
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
 
       await expect(client.get('test-endpoint')).rejects.toThrow(APIError);
       await expect(client.get('test-endpoint')).rejects.toThrow('HTTP 500');
@@ -199,7 +204,7 @@ describe('HTTPClient', () => {
         });
       });
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
 
       await expect(client.get('test-endpoint')).rejects.toThrow(NetworkError);
       await expect(client.get('test-endpoint')).rejects.toThrow('Request timeout');
@@ -210,7 +215,7 @@ describe('HTTPClient', () => {
     it('should throw NetworkError on network failure', async () => {
       mockFetch.mockRejectedValue(new TypeError('Network request failed'));
 
-      const client = new HTTPClient(config);
+      const client = new HTTPClient(config, logger);
 
       await expect(client.get('test-endpoint')).rejects.toThrow(NetworkError);
       await expect(client.get('test-endpoint')).rejects.toThrow('Network request failed');
@@ -229,7 +234,7 @@ describe('HTTPClient', () => {
         fetch: customFetch as unknown as typeof fetch,
       };
 
-      const client = new HTTPClient(customConfig);
+      const client = new HTTPClient(customConfig, logger);
       await client.get('test-endpoint');
 
       expect(customFetch).toHaveBeenCalled();
@@ -250,7 +255,7 @@ describe('HTTPClient', () => {
         json: async () => ({}),
       });
 
-      const client = new HTTPClient(minimalConfig);
+      const client = new HTTPClient(minimalConfig, logger);
       await client.get('test');
 
       expect(mockFetch).toHaveBeenCalledWith(
@@ -271,7 +276,7 @@ describe('HTTPClient', () => {
         json: async () => ({}),
       });
 
-      const client = new HTTPClient(customConfig);
+      const client = new HTTPClient(customConfig, logger);
       await client.get('test');
 
       expect(mockFetch).toHaveBeenCalledWith(
