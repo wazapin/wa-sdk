@@ -51,6 +51,7 @@ import { BlockUsersAPI } from '../account/block-users.js';
 import { BusinessAccountsAPI } from '../account/business-accounts.js';
 import { TwoStepVerificationAPI } from '../account/two-step-verification.js';
 import { SharedWABAsAPI } from '../account/shared-wabas.js';
+import { EmbeddedSignupAPI } from '../account/embedded-signup.js';
 import { TemplateManagementAPI } from '../templates/index.js';
 import { CommerceMessagesAPI } from '../messages/commerce.js';
 import { TypingIndicatorAPI } from '../messages/typing.js';
@@ -206,6 +207,11 @@ export class WhatsAppClient {
    * Shared WABAs API
    */
   public readonly sharedWABAs: SharedWABAsAPI;
+
+  /**
+   * Embedded Signup API for business onboarding
+   */
+  public readonly embeddedSignup: EmbeddedSignupAPI;
 
   /**
    * Template Management API
@@ -365,6 +371,7 @@ export class WhatsAppClient {
     this.businessAccounts = new BusinessAccountsAPI(this.client);
     this.twoStepVerification = new TwoStepVerificationAPI(this.client);
     this.sharedWABAs = new SharedWABAsAPI(this.client);
+    this.embeddedSignup = new EmbeddedSignupAPI(this.client);
     
     // Note: Templates, Analytics need wabaId (not phoneNumberId)
     // Users should pass wabaId when creating client or call these directly

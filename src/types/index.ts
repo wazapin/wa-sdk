@@ -143,7 +143,7 @@ export type {
   TemplateComponent,
   Template,
   TemplateListResponse,
-  TemplateNamespaceResponse,
+  TemplateNamespaceResponse as TemplateNamespace,
   CreateTemplateParams,
   CreateAuthTemplateParams,
   CreateCatalogTemplateParams,
@@ -221,3 +221,27 @@ export type {
   SharedWABAsResponse,
   ListSharedWABAsOptions,
 } from './shared-wabas.js';
+
+// Embedded Signup types
+export type {
+  DebugTokenResponse,
+  SharedWABAsResponse as EmbeddedSignupWABAsResponse,
+  WABAInfo,
+  FilterWABAOptions,
+  SystemUser,
+  SystemUsersResponse,
+  AssignedUser,
+  AssignedUsersResponse,
+  AddSystemUserParams,
+  ExtendedCredit as EmbeddedSignupExtendedCredit,
+  ExtendedCreditsListResponse,
+  AttachCreditLineParams,
+  AllocationConfigResponse,
+  CreditSharingRecord,
+  OverrideCallbackParams,
+  WABASubscription,
+  SubscriptionsResponse,
+  PhoneNumberFilterOptions,
+  PhoneNumberCertificate,
+  TemplateNamespaceResponse as EmbeddedSignupTemplateNamespace,
+} from './embedded-signup.js';

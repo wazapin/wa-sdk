@@ -603,6 +603,143 @@ console.log('MIME Type:', downloadResponse.mimeType);
 
 ---
 
+## 🚀 Embedded Signup
+
+Onboard businesses to WhatsApp Cloud API using the Embedded Signup flow:
+
+### Complete Onboarding Flow
+
+```typescript
+import { WhatsAppClient } from '@wazapin/wa-sdk';
+
+const client = new WhatsAppClient({
+  phoneNumberId: 'your-phone-id',
+  accessToken: 'your-system-user-token' // System User token required
+});
+
+// Step 1: Debug OAuth token from signup flow
+const tokenInfo = await client.embeddedSignup.debugToken(oauthToken);
+const wabaIds = tokenInfo.data.granular_scopes
+  .find(scope => scope.scope === 'whatsapp_business_management')
+  ?.target_ids || [];
+
+console.log('Shared WABAs:', wabaIds);
+
+// Step 2: Get WABA details
+const wabas = await client.embeddedSignup.listSharedWABAs(businessId);
+wabas.data.forEach(waba => {
+  console.log(`WABA: ${waba.name} (${waba.id})`);
+  console.log(`Currency: ${waba.currency}`);
+});
+
+// Step 3: Add system user with permissions
+await client.embeddedSignup.addSystemUser(wabaId, {
+  user: systemUserId,
+  tasks: ['MANAGE'] // or ['DEVELOP'] or both
+});
+
+// Step 4: Share credit line for billing
+const allocation = await client.embeddedSignup.attachCreditLine(creditLineId, {
+  waba_id: wabaId,
+  waba_currency: 'USD'
+});
+console.log('Allocation Config ID:', allocation.allocation_config_id);
+
+// Step 5: Verify credit sharing
+const record = await client.embeddedSignup.verifyCreditSharing(
+  allocation.allocation_config_id
+);
+if (record.receiving_credential?.id) {
+  console.log('Credit successfully shared');
+}
+
+// Step 6: Subscribe to webhooks
+await client.embeddedSignup.subscribeToWABA(wabaId);
+console.log('Subscribed to WABA webhooks');
+```
+
+### Filter and Sort WABAs
+
+```typescript
+// Get WABAs created after timestamp
+const recentWabas = await client.embeddedSignup.listOwnedWABAs(businessId, {
+  filtering: [{
+    field: 'creation_time',
+    operator: 'GREATER_THAN',
+    value: '1604962813'
+  }],
+  sort: 'creation_time_descending'
+});
+```
+
+### Manage Credit Lines
+
+```typescript
+// Get credit lines
+const credits = await client.embeddedSignup.getExtendedCredits(businessId, [
+  'id', 'legal_entity_name', 'credit_available', 'balance', 'currency'
+]);
+
+credits.data.forEach(credit => {
+  console.log(`${credit.legal_entity_name}`);
+  console.log(`Available: ${credit.credit_available} cents`);
+});
+
+// Get credit sharing status
+const record = await client.embeddedSignup.getCreditSharingRecord(allocationConfigId);
+console.log('Status:', record.request_status); // 'ACTIVE' or 'DELETED'
+
+// Revoke credit access
+await client.embeddedSignup.revokeCreditSharing(allocationConfigId);
+```
+
+### Override Webhook URL per WABA
+
+```typescript
+// Set alternate webhook URL for specific WABA
+await client.embeddedSignup.overrideCallbackURL(wabaId, {
+  override_callback_uri: 'https://alternate.example.com/webhook',
+  verify_token: 'my_verify_token'
+});
+
+// Verify override was set
+const subs = await client.embeddedSignup.listSubscriptions(wabaId);
+console.log('Override URL:', subs.data[0].override_callback_uri);
+```
+
+### Manage Phone Numbers and Templates
+
+```typescript
+// List phone numbers with filtering
+const livePhones = await client.embeddedSignup.listPhoneNumbers(wabaId, {
+  filtering: [{
+    field: 'account_mode',
+    operator: 'EQUAL',
+    value: 'LIVE'
+  }]
+});
+
+// Get display name certificates
+const certs = await client.embeddedSignup.getPhoneNumberCertificate(wabaId);
+certs.data.forEach(phone => {
+  console.log(`${phone.display_phone_number}: ${phone.name_status}`);
+  if (phone.new_certificate) {
+    console.log('New certificate:', phone.new_certificate);
+  }
+});
+
+// List message templates
+const templates = await client.embeddedSignup.listMessageTemplates(wabaId);
+const approved = templates.data.filter(t => t.status === 'APPROVED');
+console.log(`${approved.length} approved templates`);
+
+// Get template namespace
+const ns = await client.embeddedSignup.getTemplateNamespace(wabaId);
+console.log('Namespace:', ns.message_template_namespace);
+```
+
+---
+
 ## 🔔 Webhooks
 
 ### Parse Webhook Events
@@ -1309,6 +1446,28 @@ The `WhatsAppClient` organizes methods into four namespaces:
 
 #### `client.account.*`
 - `getMessagingLimit()` - Get current messaging limit tier
+
+#### `client.embeddedSignup.*`
+- `debugToken()` - Debug OAuth token to get shared WABA IDs
+- `listSharedWABAs()` - List client WABAs shared via embedded signup
+- `listOwnedWABAs()` - List owned/client WABAs with filtering
+- `getWABAInfo()` - Get detailed WABA information
+- `getAssignedUsers()` - List users assigned to a WABA
+- `addSystemUser()` - Add system user with permissions
+- `listSystemUsers()` - Get business system users
+- `getExtendedCredits()` - Get credit lines for billing
+- `attachCreditLine()` - Share credit line with client WABA
+- `verifyCreditSharing()` - Verify credit sharing
+- `getCreditSharingRecord()` - Get credit sharing details
+- `revokeCreditSharing()` - Remove credit line access
+- `subscribeToWABA()` - Subscribe app to WABA webhooks
+- `listSubscriptions()` - List webhook subscriptions
+- `unsubscribeFromWABA()` - Remove webhook subscription
+- `overrideCallbackURL()` - Set alternate webhook URL
+- `listPhoneNumbers()` - List phone numbers with filtering
+- `getPhoneNumberCertificate()` - Get display name certificates
+- `listMessageTemplates()` - Get pre-approved templates
+- `getTemplateNamespace()` - Get template namespace
 
 ---
 
