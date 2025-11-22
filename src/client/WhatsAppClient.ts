@@ -31,6 +31,7 @@ import type { WebhookEvent } from '../types/webhooks.js';
 import { HTTPClient } from './http.js';
 import { Validator } from '../validation/validator.js';
 import { withRetry } from '../utils/retry.js';
+import { WazapinLogger } from '../utils/logger.js';
 
 // Import message functions
 import { sendText } from '../messages/text.js';
@@ -71,6 +72,7 @@ export class WhatsAppClient {
   private readonly phoneNumberId: string;
   private readonly validator?: Validator;
   private readonly retryConfig;
+  private readonly logger: WazapinLogger;
 
   /**
    * Messages namespace
@@ -121,10 +123,21 @@ export class WhatsAppClient {
   };
 
   constructor(config: WhatsAppClientConfig) {
-    // Initialize HTTP client
-    this.client = new HTTPClient(config);
+    // Initialize logger
+    this.logger = config.logger instanceof WazapinLogger
+      ? config.logger
+      : new WazapinLogger(config.logger);
+
+    // Initialize HTTP client with logger
+    this.client = new HTTPClient(config, this.logger);
     this.phoneNumberId = config.phoneNumberId;
     this.retryConfig = config.retry;
+
+    // Log initialization
+    this.logger.info('WhatsApp Client initialized', {
+      phoneNumberId: config.phoneNumberId,
+      apiVersion: config.apiVersion || 'v18.0',
+    });
 
     // Initialize validator if validation is enabled
     if (config.validation && config.validation !== 'off') {
