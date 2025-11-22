@@ -27,46 +27,44 @@ describe('TypingIndicatorAPI', () => {
     it('should send typing indicator', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await typingAPI.sendTypingIndicator({
         to: testRecipient,
         action: 'typing',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
-          to: testRecipient,
-          type: 'chat_state',
-          chat_state: {
-            action: 'typing',
-          },
-        );
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: testRecipient,
+        type: 'chat_state',
+        chat_state: {
+          action: 'typing',
+        },
+      });
       expect(result.success).toBe(true);
     });
 
     it('should send stop typing indicator', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await typingAPI.sendTypingIndicator({
         to: testRecipient,
         action: 'stop_typing',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
-          to: testRecipient,
-          type: 'chat_state',
-          chat_state: {
-            action: 'stop_typing',
-          },
-        );
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: testRecipient,
+        type: 'chat_state',
+        chat_state: {
+          action: 'stop_typing',
+        },
+      });
       expect(result.success).toBe(true);
     });
 
@@ -74,7 +72,7 @@ describe('TypingIndicatorAPI', () => {
       const mockResponse = { success: true };
       const actions = ['typing', 'stop_typing'] as const;
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       for (const action of actions) {
         await typingAPI.sendTypingIndicator({
@@ -82,10 +80,10 @@ describe('TypingIndicatorAPI', () => {
           action,
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[
-          vi.mocked(mockHttpClient.get).mock.calls.length - 1
-        ][0];
-        expect(callArgs.data.chat_state.action).toBe(action);
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[
+          vi.mocked(mockHttpClient.post).mock.calls.length - 1
+        ][1];
+        expect(callArgs.chat_state.action).toBe(action);
       }
     });
 
@@ -93,7 +91,7 @@ describe('TypingIndicatorAPI', () => {
       const mockResponse = { success: true };
       const recipients = ['+1234567890', '+44123456789', '+62812345678'];
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       for (const recipient of recipients) {
         await typingAPI.sendTypingIndicator({
@@ -101,10 +99,10 @@ describe('TypingIndicatorAPI', () => {
           action: 'typing',
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[
-          vi.mocked(mockHttpClient.get).mock.calls.length - 1
-        ][0];
-        expect(callArgs.data.to).toBe(recipient);
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[
+          vi.mocked(mockHttpClient.post).mock.calls.length - 1
+        ][1];
+        expect(callArgs.to).toBe(recipient);
       }
     });
   });
