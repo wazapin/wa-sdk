@@ -191,4 +191,20 @@ export type {
   AnalyticsParams,
   AnalyticsDataPoint,
   AnalyticsData,
+  ConversationType,
+  ConversationDirection,
+  ConversationDimension,
+  ConversationAnalyticsParams,
+  ConversationAnalyticsDataPoint,
+  ConversationAnalyticsResponse,
 } from './analytics.js';
+
+// Business Accounts types
+export type {
+  BusinessAccount,
+  BusinessAccountResponse,
+  ExtendedCredit,
+  ExtendedCreditsResponse,
+  GetBusinessAccountOptions,
+  ListExtendedCreditsOptions,
+} from './business-accounts.js';

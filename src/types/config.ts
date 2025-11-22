@@ -93,4 +93,22 @@ export interface WhatsAppClientConfig {
    * - Undefined: uses default logger (INFO level, no timestamp)
    */
   logger?: LoggerConfig | WazapinLogger;
+
+  /**
+   * WhatsApp Business Account ID (optional)
+   * Required for: templates, analytics APIs
+   */
+  wabaId?: string;
+
+  /**
+   * Business Account ID (optional)
+   * Required for: business accounts, billing APIs
+   */
+  businessAccountId?: string;
+
+  /**
+   * App ID (optional)
+   * Required for: resumable media upload
+   */
+  appId?: string;
 }

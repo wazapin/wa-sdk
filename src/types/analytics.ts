@@ -88,3 +88,147 @@ export interface AnalyticsData {
     };
   };
 }
+
+/**
+ * Conversation type for analytics
+ */
+export type ConversationType =
+  | 'free_tier'
+  | 'regular'
+  | 'free_entry_point'
+  | 'authentication'
+  | 'marketing'
+  | 'utility'
+  | 'service';
+
+/**
+ * Conversation direction
+ */
+export type ConversationDirection = 'business_initiated' | 'user_initiated';
+
+/**
+ * Dimension for conversation analytics
+ */
+export type ConversationDimension =
+  | 'conversation_type'
+  | 'conversation_direction'
+  | 'country'
+  | 'phone';
+
+/**
+ * Conversation analytics parameters
+ */
+export interface ConversationAnalyticsParams {
+  /**
+   * Start date (UNIX timestamp)
+   */
+  start: number;
+
+  /**
+   * End date (UNIX timestamp)
+   */
+  end: number;
+
+  /**
+   * Granularity: DAILY or MONTHLY
+   */
+  granularity?: AnalyticsGranularity;
+
+  /**
+   * Phone numbers to filter (optional)
+   */
+  phone_numbers?: string[];
+
+  /**
+   * Country codes to filter (ISO 3166 alpha-2, e.g., "US", "BR")
+   */
+  country_codes?: string[];
+
+  /**
+   * Conversation types to filter
+   */
+  conversation_types?: ConversationType[];
+
+  /**
+   * Conversation directions to filter
+   */
+  conversation_directions?: ConversationDirection[];
+
+  /**
+   * Dimensions to group by (max 2)
+   */
+  dimensions?: ConversationDimension[];
+
+  /**
+   * Metric type (default: CONVERSATION)
+   */
+  metric_type?: 'CONVERSATION' | 'COST';
+}
+
+/**
+ * Conversation analytics data point
+ */
+export interface ConversationAnalyticsDataPoint {
+  /**
+   * Start timestamp
+   */
+  start: number;
+
+  /**
+   * End timestamp
+   */
+  end: number;
+
+  /**
+   * Number of conversations
+   */
+  conversation?: number;
+
+  /**
+   * Cost of conversations
+   */
+  cost?: number;
+
+  /**
+   * Conversation type (if dimension includes conversation_type)
+   */
+  conversation_type?: ConversationType;
+
+  /**
+   * Conversation direction (if dimension includes conversation_direction)
+   */
+  conversation_direction?: ConversationDirection;
+
+  /**
+   * Country code (if dimension includes country)
+   */
+  country?: string;
+
+  /**
+   * Phone number (if dimension includes phone)
+   */
+  phone?: string;
+}
+
+/**
+ * Conversation analytics response
+ */
+export interface ConversationAnalyticsResponse {
+  /**
+   * Conversation analytics data points
+   */
+  conversation_analytics: {
+    data: ConversationAnalyticsDataPoint[];
+    phone_numbers?: string[];
+    country_codes?: string[];
+    conversation_types?: ConversationType[];
+    conversation_directions?: ConversationDirection[];
+    granularity?: AnalyticsGranularity;
+    metric_type?: string;
+  };
+
+  /**
+   * WABA ID
+   */
+  id: string;
+}

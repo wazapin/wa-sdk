@@ -48,6 +48,7 @@ import { WABAManagementAPI } from '../account/waba.js';
 import { QRCodeAPI } from '../account/qr-codes.js';
 import { CommerceSettingsAPI } from '../account/commerce-settings.js';
 import { BlockUsersAPI } from '../account/block-users.js';
+import { BusinessAccountsAPI } from '../account/business-accounts.js';
 import { TemplateManagementAPI } from '../templates/index.js';
 import { CommerceMessagesAPI } from '../messages/commerce.js';
 import { TypingIndicatorAPI } from '../messages/typing.js';
@@ -188,6 +189,11 @@ export class WhatsAppClient {
    * Block Users API
    */
   public readonly blockUsers: BlockUsersAPI;
+
+  /**
+   * Business Accounts API
+   */
+  public readonly businessAccounts: BusinessAccountsAPI;
 
   /**
    * Template Management API
@@ -344,10 +350,11 @@ export class WhatsAppClient {
     this.qrCodes = new QRCodeAPI(this.client, this.phoneNumberId);
     this.commerceSettings = new CommerceSettingsAPI(this.client, this.phoneNumberId);
     this.blockUsers = new BlockUsersAPI(this.client, this.phoneNumberId);
+    this.businessAccounts = new BusinessAccountsAPI(this.client);
     
     // Note: Templates, Analytics need wabaId (not phoneNumberId)
     // Users should pass wabaId when creating client or call these directly
-    const wabaId = (config as any).wabaId || this.phoneNumberId;
+    const wabaId = config.wabaId || this.phoneNumberId;
     this.templates = new TemplateManagementAPI(this.client, wabaId);
     this.analytics = new AnalyticsAPI(this.client, wabaId);
     

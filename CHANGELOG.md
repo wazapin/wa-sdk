@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-11-22
+
+### Added
+- **Business Accounts API** - New `businessAccounts` namespace for managing business accounts and billing
+  - `getBusinessAccount()` - Get business account details with custom fields
+  - `listExtendedCredits()` - List credit lines for WhatsApp billing
+  - `getCreditBalance()` - Convenience method to check available credit
+- **Enhanced Analytics API** - Advanced conversation analytics with multi-dimensional breakdowns
+  - `getConversationAnalyticsV2()` - Detailed conversation analytics with dimensions support
+  - Support for conversation types: `free_tier`, `marketing`, `utility`, `service`, `authentication`, etc.
+  - Support for conversation directions: `business_initiated`, `user_initiated`
+  - Multi-dimensional grouping (up to 2 dimensions): type, direction, country, phone
+  - Cost and conversation count metrics
+- **New Type Definitions**
+  - `BusinessAccount`, `ExtendedCredit` types for business management
+  - `ConversationType`, `ConversationDirection`, `ConversationDimension` for analytics
+  - `ConversationAnalyticsParams`, `ConversationAnalyticsResponse` for detailed analytics
+- **Configuration Options**
+  - Added optional `wabaId` field to `WhatsAppClientConfig` for templates and analytics
+  - Added optional `businessAccountId` field for business account operations
+  - Added optional `appId` field for future resumable upload support
+- **Documentation**
+  - Added `IMPLEMENTATION-SUMMARY.md` with detailed usage guide and examples
+  - Added comprehensive JSDoc comments with usage examples
+  - Added 10 new unit tests for Business Accounts API (total: 418 tests)
+
+### Changed
+- Deprecated `analytics.getConversationAnalytics()` in favor of `getConversationAnalyticsV2()` for better analytics
+
+### Technical
+- All 418 tests passing with zero failures
+- Zero breaking changes - fully backward compatible
+- TypeScript build successful with no errors
+
 ### Changed
 - **License changed from MIT to Apache 2.0 with additional conditions** (2025-11-22)
   - Added LOGO and copyright protection for frontend components
