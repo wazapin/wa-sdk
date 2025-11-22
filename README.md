@@ -144,6 +144,152 @@ const client = new WhatsAppClient({
 
 ---
 
+## 🔧 Logger & Debugging
+
+### Automatic HTTP Headers
+
+Every request to WhatsApp API automatically includes SDK identification headers:
+
+```http
+User-Agent: wazapin-wa/1.0.0 (Node/v22.21.0; linux; x64)
+Wazapin-SDK-Version: 1.0.0
+```
+
+These headers help:
+- Meta track SDK usage for better support
+- Debug issues specific to SDK versions
+- Monitor SDK adoption and performance
+
+### Logger Configuration
+
+The SDK includes a structured logger with automatic sensitive data redaction:
+
+```typescript
+// Default: INFO level (recommended for production)
+const client = new WhatsAppClient({
+  phoneNumberId: 'xxx',
+  accessToken: 'xxx',
+  // No logger config = INFO level by default
+});
+
+// Debug mode (development)
+const devClient = new WhatsAppClient({
+  phoneNumberId: 'xxx',
+  accessToken: 'xxx',
+  logger: {
+    level: 'debug',      // Log everything
+    timestamp: true,     // Add timestamps
+  },
+});
+
+// Silent mode (production with minimal logs)
+const prodClient = new WhatsAppClient({
+  phoneNumberId: 'xxx',
+  accessToken: 'xxx',
+  logger: {
+    level: 'error',      // Only log errors
+  },
+});
+
+// Custom logger handler
+import { WazapinLogger } from '@wazapin/wa-sdk';
+
+const customLogger = new WazapinLogger({
+  level: 'info',
+  timestamp: true,
+  handler: {
+    debug: (msg) => myDebugLogger(msg),
+    info: (msg) => myInfoLogger(msg),
+    warn: (msg) => myWarnLogger(msg),
+    error: (msg) => myErrorLogger(msg),
+  },
+});
+
+const client = new WhatsAppClient({
+  phoneNumberId: 'xxx',
+  accessToken: 'xxx',
+  logger: customLogger,
+});
+```
+
+### Log Levels
+
+| Level | Description | When to Use |
+|-------|-------------|-------------|
+| **debug** | All operations including HTTP requests/responses | Development, troubleshooting |
+| **info** | Important operations (client init, messages sent) | Production (default) |
+| **warn** | Warning conditions | Production |
+| **error** | Error conditions only | Minimal logging |
+
+### Log Format
+
+```
+[wazapin-wa] [LEVEL] Message
+[wazapin-wa] [INFO] WhatsApp Client initialized { phoneNumberId: "123...", apiVersion: "v18.0" }
+[wazapin-wa] [DEBUG] POST /messages { body: {...} }
+[wazapin-wa] [DEBUG] POST /messages - Success { status: 200 }
+[wazapin-wa] [ERROR] POST /messages - Failed { error: {...} }
+```
+
+With timestamps:
+```
+[2025-11-22T10:19:49.423Z] [wazapin-wa] [INFO] Message
+```
+
+### Sensitive Data Redaction
+
+The logger automatically redacts sensitive information:
+
+```typescript
+logger.info('Request data', {
+  accessToken: 'secret123',    // Redacted
+  password: 'mypass',           // Redacted
+  apiKey: 'key123',             // Redacted
+  phoneNumberId: '123456',      // Kept
+  to: '+1234567890',            // Kept
+});
+
+// Output:
+// [wazapin-wa] [INFO] Request data {
+//   "accessToken": "[REDACTED]",
+//   "password": "[REDACTED]",
+//   "apiKey": "[REDACTED]",
+//   "phoneNumberId": "123456",
+//   "to": "+1234567890"
+// }
+```
+
+**Redacted fields:**
+- `accessToken`, `access_token`
+- `password`
+- `secret`
+- `token`
+- `apiKey`, `api_key`
+- `authorization`, `auth`
+
+### Debug Mode Example
+
+```typescript
+const client = new WhatsAppClient({
+  phoneNumberId: 'xxx',
+  accessToken: 'xxx',
+  logger: { level: 'debug', timestamp: true },
+});
+
+await client.messages.sendText({
+  to: '+1234567890',
+  text: 'Hello',
+});
+
+// Console output:
+// [2025-11-22T10:19:49.420Z] [wazapin-wa] [DEBUG] HTTPClient initialized { baseUrl: "...", apiVersion: "v18.0", sdkVersion: "1.0.0" }
+// [2025-11-22T10:19:49.423Z] [wazapin-wa] [INFO] WhatsApp Client initialized { phoneNumberId: "xxx", apiVersion: "v18.0" }
+// [2025-11-22T10:19:49.425Z] [wazapin-wa] [DEBUG] POST 123456789/messages { body: { to: "+1234567890", text: "Hello" } }
+// [2025-11-22T10:19:49.520Z] [wazapin-wa] [DEBUG] POST 123456789/messages - Success { status: 200 }
+```
+
+---
+
 ## 📱 Sending Messages
 
 ### Text Messages

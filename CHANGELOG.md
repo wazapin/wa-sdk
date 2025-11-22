@@ -15,6 +15,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### SDK Branding & Developer Experience (2025-11-22)
+- **HTTP Headers Branding** - Automatic SDK identification in all API requests
+  - User-Agent header: RFC 9110 compliant format `wazapin-wa/1.0.0 (Node/v18.17.0; linux; x64)`
+  - Custom SDK version header: `Wazapin-SDK-Version: 1.0.0`
+  - Auto-detect SDK version from package.json
+  - Auto-detect platform info (Node version, OS, architecture)
+  - Helps Meta track SDK usage for better support and analytics
+  
+- **Structured Logger** - Production-ready logging with branded format
+  - Branded log format: `[wazapin-wa] [LEVEL] Message`
+  - Log levels: debug, info, warn, error (default: info)
+  - Optional timestamps: `[2025-11-22T10:19:49.423Z] [wazapin-wa] [INFO] Message`
+  - Automatic sensitive data redaction (tokens, passwords, secrets, API keys)
+  - Custom handler support for integration with external logging systems
+  - Zero performance impact when disabled
+  - 41 comprehensive tests (version utilities + logger)
+
 #### P0 Critical Features (2025-11-22)
 - **Business Profile Management** - Full business profile management
   - Get business profile information (all fields or specific)
@@ -60,12 +77,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved documentation navigation and clarity
 
 ### Tests
-- **Total**: 235 tests (up from 189)
-- **New Tests**: 44 tests for P0 features
+- **Total**: 408 tests (up from 367)
+- **New Tests**: 41 tests for SDK branding
+  - Version utilities: 16 tests
+  - Logger: 25 tests
+- **Previous**: 44 tests for P0 features
   - Business Profile: 16 tests
   - Interactive CTA: 12 tests
   - Conversational Components: 16 tests
-- **Coverage**: 89%+ (maintained high coverage)
+- **Coverage**: Maintained high coverage
 - **All tests passing**: ✅
 
 ### Verified
