@@ -16,6 +16,7 @@ import type {
   SendInteractiveButtonsParams,
   SendInteractiveListParams,
   SendInteractiveCarouselParams,
+  SendInteractiveCTAParams,
   SendTemplateParams,
 } from '../types/messages.js';
 import type {
@@ -25,13 +26,33 @@ import type {
   MediaDownloadResponse,
   MediaUrlResponse,
 } from '../types/responses.js';
-import type { MessagingLimitResponse } from '../types/account.js';
+import type {
+  MessagingLimitResponse,
+  BusinessProfileResponse,
+  UpdateBusinessProfileParams,
+  UpdateBusinessProfileResponse,
+  ConfigureConversationalAutomationParams,
+  ConversationalAutomationResponse,
+} from '../types/account.js';
 import type { WebhookEvent } from '../types/webhooks.js';
 
 import { HTTPClient } from './http.js';
 import { Validator } from '../validation/validator.js';
 import { withRetry } from '../utils/retry.js';
 import { WazapinLogger } from '../utils/logger.js';
+
+// Import new API classes
+import { PhoneNumbersAPI } from '../account/phone-numbers.js';
+import { RegistrationAPI } from '../account/registration.js';
+import { WABAManagementAPI } from '../account/waba.js';
+import { QRCodeAPI } from '../account/qr-codes.js';
+import { CommerceSettingsAPI } from '../account/commerce-settings.js';
+import { BlockUsersAPI } from '../account/block-users.js';
+import { TemplateManagementAPI } from '../templates/index.js';
+import { CommerceMessagesAPI } from '../messages/commerce.js';
+import { TypingIndicatorAPI } from '../messages/typing.js';
+import { WebhookSubscriptionAPI } from '../webhooks/subscribe.js';
+import { AnalyticsAPI } from '../analytics/index.js';
 
 // Import message functions
 import { sendText } from '../messages/text.js';
@@ -46,6 +67,7 @@ import {
   sendInteractiveButtons,
   sendInteractiveList,
   sendInteractiveCarousel,
+  sendInteractiveCTA,
 } from '../messages/interactive.js';
 import { sendTemplate } from '../messages/template.js';
 import { sendLocation } from '../messages/location.js';
@@ -62,7 +84,13 @@ import { parseWebhook } from '../webhooks/parser.js';
 import { verifyWebhookSignature } from '../webhooks/verifier.js';
 
 // Import account functions
-import { getMessagingLimit } from '../account/index.js';
+import {
+  getMessagingLimit,
+  getBusinessProfile,
+  updateBusinessProfile,
+  configureConversationalAutomation,
+  getConversationalAutomation,
+} from '../account/index.js';
 
 /**
  * WhatsApp Business Cloud API Client
@@ -95,6 +123,7 @@ export class WhatsAppClient {
       params: SendInteractiveCarouselParams
     ) => Promise<MessageResponse>;
     sendTemplate: (params: SendTemplateParams) => Promise<MessageResponse>;
+    sendInteractiveCTA: (params: SendInteractiveCTAParams) => Promise<MessageResponse>;
     markAsRead: (messageId: string) => Promise<SuccessResponse>;
   };
 
@@ -120,7 +149,70 @@ export class WhatsAppClient {
    */
   public readonly account: {
     getMessagingLimit: () => Promise<MessagingLimitResponse>;
+    getBusinessProfile: (fields?: string[]) => Promise<BusinessProfileResponse>;
+    updateBusinessProfile: (
+      params: UpdateBusinessProfileParams
+    ) => Promise<UpdateBusinessProfileResponse>;
+    configureConversationalAutomation: (
+      config: ConfigureConversationalAutomationParams
+    ) => Promise<{ success: boolean }>;
+    getConversationalAutomation: () => Promise<ConversationalAutomationResponse>;
   };
+
+  /**
+   * Phone Numbers API
+   */
+  public readonly phoneNumbers: PhoneNumbersAPI;
+
+  /**
+   * Registration API
+   */
+  public readonly registration: RegistrationAPI;
+
+  /**
+   * WABA Management API
+   */
+  public readonly waba: WABAManagementAPI;
+
+  /**
+   * QR Codes API
+   */
+  public readonly qrCodes: QRCodeAPI;
+
+  /**
+   * Commerce Settings API
+   */
+  public readonly commerceSettings: CommerceSettingsAPI;
+
+  /**
+   * Block Users API
+   */
+  public readonly blockUsers: BlockUsersAPI;
+
+  /**
+   * Template Management API
+   */
+  public readonly templates: TemplateManagementAPI;
+
+  /**
+   * Commerce Messages API
+   */
+  public readonly commerce: CommerceMessagesAPI;
+
+  /**
+   * Typing Indicator API
+   */
+  public readonly typing: TypingIndicatorAPI;
+
+  /**
+   * Webhook Subscription API
+   */
+  public readonly webhookSubscription: WebhookSubscriptionAPI;
+
+  /**
+   * Analytics API
+   */
+  public readonly analytics: AnalyticsAPI;
 
   constructor(config: WhatsAppClientConfig) {
     // Initialize logger
@@ -198,6 +290,10 @@ export class WhatsAppClient {
         this.withRetryWrapper(() =>
           sendTemplate(this.client, this.phoneNumberId, params, this.validator)
         ),
+      sendInteractiveCTA: (params) =>
+        this.withRetryWrapper(() =>
+          sendInteractiveCTA(this.client, this.phoneNumberId, params, this.validator)
+        ),
       markAsRead: (messageId) =>
         this.withRetryWrapper(() => markAsRead(this.client, this.phoneNumberId, messageId)),
     };
@@ -223,7 +319,41 @@ export class WhatsAppClient {
         this.withRetryWrapper(() =>
           getMessagingLimit(this.client, this.phoneNumberId, this.validator)
         ),
+      getBusinessProfile: (fields) =>
+        this.withRetryWrapper(() =>
+          getBusinessProfile(this.client, this.phoneNumberId, fields, this.validator)
+        ),
+      updateBusinessProfile: (params) =>
+        this.withRetryWrapper(() =>
+          updateBusinessProfile(this.client, this.phoneNumberId, params, this.validator)
+        ),
+      configureConversationalAutomation: (config) =>
+        this.withRetryWrapper(() =>
+          configureConversationalAutomation(this.client, this.phoneNumberId, config, this.validator)
+        ),
+      getConversationalAutomation: () =>
+        this.withRetryWrapper(() =>
+          getConversationalAutomation(this.client, this.phoneNumberId, this.validator)
+        ),
     };
+
+    // Initialize new API classes
+    this.phoneNumbers = new PhoneNumbersAPI(this.client, this.phoneNumberId);
+    this.registration = new RegistrationAPI(this.client, this.phoneNumberId);
+    this.waba = new WABAManagementAPI(this.client);
+    this.qrCodes = new QRCodeAPI(this.client, this.phoneNumberId);
+    this.commerceSettings = new CommerceSettingsAPI(this.client, this.phoneNumberId);
+    this.blockUsers = new BlockUsersAPI(this.client, this.phoneNumberId);
+    
+    // Note: Templates, Analytics need wabaId (not phoneNumberId)
+    // Users should pass wabaId when creating client or call these directly
+    const wabaId = (config as any).wabaId || this.phoneNumberId;
+    this.templates = new TemplateManagementAPI(this.client, wabaId);
+    this.analytics = new AnalyticsAPI(this.client, wabaId);
+    
+    this.commerce = new CommerceMessagesAPI(this.client, this.phoneNumberId);
+    this.typing = new TypingIndicatorAPI(this.client, this.phoneNumberId);
+    this.webhookSubscription = new WebhookSubscriptionAPI(this.client);
   }
 
   /**

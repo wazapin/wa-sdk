@@ -36,6 +36,9 @@ export {
   templateParameterSchema,
   templateComponentSchema,
   sendTemplateParamsSchema,
+  interactiveCTAHeaderSchema,
+  interactiveCTAActionSchema,
+  sendInteractiveCTAParamsSchema,
 } from './messages.js';
 
 // Webhook schemas
@@ -54,4 +57,16 @@ export {
 } from './webhooks.js';
 
 // Account schemas
-export { messagingLimitTierSchema, messagingLimitResponseSchema } from './account.js';
+export {
+  messagingLimitTierSchema,
+  messagingLimitResponseSchema,
+  businessVerticalSchema,
+  businessProfileSchema,
+  updateBusinessProfileParamsSchema,
+  businessProfileResponseSchema,
+  updateBusinessProfileResponseSchema,
+  conversationalCommandSchema,
+  configureConversationalAutomationParamsSchema,
+  conversationalAutomationConfigSchema,
+  conversationalAutomationResponseSchema,
+} from './account.js';
