@@ -66,74 +66,72 @@ describe('CommerceSettingsAPI', () => {
     it('should update catalog visibility', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await commerceSettingsAPI.updateCommerceSettings({
         is_catalog_visible: true,
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/whatsapp_commerce_settings`, {
-          is_catalog_visible: true,
-        );
+        is_catalog_visible: true,
+      });
       expect(result.success).toBe(true);
     });
 
     it('should update cart enablement', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await commerceSettingsAPI.updateCommerceSettings({
         is_cart_enabled: true,
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/whatsapp_commerce_settings`, {
-          is_cart_enabled: true,
-        );
+        is_cart_enabled: true,
+      });
       expect(result.success).toBe(true);
     });
 
     it('should update both settings', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceSettingsAPI.updateCommerceSettings({
         is_catalog_visible: true,
         is_cart_enabled: false,
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.is_catalog_visible).toBe(true);
-      expect(callArgs.data.is_cart_enabled).toBe(false);
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.is_catalog_visible).toBe(true);
+      expect(callArgs.is_cart_enabled).toBe(false);
     });
 
     it('should disable catalog', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceSettingsAPI.updateCommerceSettings({
         is_catalog_visible: false,
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.is_catalog_visible).toBe(false);
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.is_catalog_visible).toBe(false);
     });
 
     it('should disable cart', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceSettingsAPI.updateCommerceSettings({
         is_cart_enabled: false,
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.is_cart_enabled).toBe(false);
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.is_cart_enabled).toBe(false);
     });
   });
 });
