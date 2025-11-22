@@ -8,6 +8,8 @@ import {
   NetworkError,
   RateLimitError,
 } from '../types/errors.js';
+import { getSDKMetadata } from '../utils/version.js';
+import type { WazapinLogger } from '../utils/logger.js';
 
 /**
  * HTTP client for making requests to WhatsApp Cloud API
@@ -18,13 +20,28 @@ export class HTTPClient {
   private readonly accessToken: string;
   private readonly timeout: number;
   private readonly fetchImpl: typeof fetch;
+  private readonly sdkVersion: string;
+  private readonly userAgent: string;
+  private readonly logger: WazapinLogger;
 
-  constructor(config: WhatsAppClientConfig) {
+  constructor(config: WhatsAppClientConfig, logger: WazapinLogger) {
     this.baseUrl = config.baseUrl || 'https://graph.facebook.com';
     this.apiVersion = config.apiVersion || 'v18.0';
     this.accessToken = config.accessToken;
     this.timeout = config.timeout || 30000;
     this.fetchImpl = config.fetch || globalThis.fetch;
+
+    // Initialize SDK metadata
+    const metadata = getSDKMetadata();
+    this.sdkVersion = metadata.version;
+    this.userAgent = metadata.userAgent;
+    this.logger = logger;
+
+    this.logger.debug('HTTPClient initialized', {
+      baseUrl: this.baseUrl,
+      apiVersion: this.apiVersion,
+      sdkVersion: this.sdkVersion,
+    });
   }
 
   /**
@@ -37,6 +54,8 @@ export class HTTPClient {
   ): Promise<T> {
     const url = `${this.baseUrl}/${this.apiVersion}/${endpoint}`;
 
+    this.logger.debug(`${method} ${endpoint}`, body ? { body } : undefined);
+
     try {
       // Create abort controller for timeout
       const controller = new AbortController();
@@ -47,6 +66,8 @@ export class HTTPClient {
         headers: {
           Authorization: `Bearer ${this.accessToken}`,
           'Content-Type': 'application/json',
+          'User-Agent': this.userAgent,
+          'Wazapin-SDK-Version': this.sdkVersion,
         },
         body: body ? JSON.stringify(body) : undefined,
         signal: controller.signal,
@@ -58,8 +79,14 @@ export class HTTPClient {
         throw await this.handleError(response);
       }
 
-      return (await response.json()) as T;
+      const data = (await response.json()) as T;
+      this.logger.debug(`${method} ${endpoint} - Success`, { status: response.status });
+
+      return data;
     } catch (error) {
+      // Log error
+      this.logger.error(`${method} ${endpoint} - Failed`, { error });
+
       // Handle abort/timeout errors
       if (error instanceof Error && error.name === 'AbortError') {
         throw new NetworkError(

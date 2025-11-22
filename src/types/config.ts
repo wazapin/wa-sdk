@@ -2,6 +2,8 @@
  * Configuration types for the WhatsApp client
  */
 
+import type { WazapinLogger, LoggerConfig } from '../utils/logger.js';
+
 /**
  * Retry configuration
  */
@@ -83,4 +85,12 @@ export interface WhatsAppClientConfig {
    * Timeout in milliseconds (default: 30000)
    */
   timeout?: number;
+
+  /**
+   * Logger configuration
+   * - Pass LoggerConfig object for custom logger settings
+   * - Pass WazapinLogger instance for shared logger
+   * - Undefined: uses default logger (INFO level, no timestamp)
+   */
+  logger?: LoggerConfig | WazapinLogger;
 }
