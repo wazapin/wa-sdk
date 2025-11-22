@@ -208,3 +208,16 @@ export type {
   GetBusinessAccountOptions,
   ListExtendedCreditsOptions,
 } from './business-accounts.js';
+
+// Two-Step Verification types
+export type {
+  SetTwoStepVerificationRequest,
+  SetTwoStepVerificationResponse,
+} from './two-step-verification.js';
+
+// Shared WABAs types
+export type {
+  SharedWABA,
+  SharedWABAsResponse,
+  ListSharedWABAsOptions,
+} from './shared-wabas.js';
