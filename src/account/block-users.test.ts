@@ -28,13 +28,13 @@ describe('BlockUsersAPI', () => {
     it('should block a user', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await blockUsersAPI.blockUser(testUserPhone);
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/block`, {
-          phone_number: testUserPhone,
-        );
+        phone_number: testUserPhone,
+      });
       expect(result.success).toBe(true);
     });
 
@@ -42,17 +42,16 @@ describe('BlockUsersAPI', () => {
       const mockResponse = { success: true };
       const phoneNumbers = ['+1234567890', '+44123456789', '+62812345678'];
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       for (const phoneNumber of phoneNumbers) {
         await blockUsersAPI.blockUser(phoneNumber);
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
+          `${testPhoneNumberId}/block`,
           expect.objectContaining({
-            data: {
-              phone_number: phoneNumber,
-            },
-          }),
+            phone_number: phoneNumber,
+          })
         );
       }
     });
@@ -62,13 +61,13 @@ describe('BlockUsersAPI', () => {
     it('should unblock a user', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await blockUsersAPI.unblockUser(testUserPhone);
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/unblock`, {
-          phone_number: testUserPhone,
-        );
+        phone_number: testUserPhone,
+      });
       expect(result.success).toBe(true);
     });
 
@@ -76,17 +75,16 @@ describe('BlockUsersAPI', () => {
       const mockResponse = { success: true };
       const phoneNumbers = ['+1234567890', '+44123456789', '+62812345678'];
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       for (const phoneNumber of phoneNumbers) {
         await blockUsersAPI.unblockUser(phoneNumber);
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
+          `${testPhoneNumberId}/unblock`,
           expect.objectContaining({
-            data: {
-              phone_number: phoneNumber,
-            },
-          }),
+            phone_number: phoneNumber,
+          })
         );
       }
     });
