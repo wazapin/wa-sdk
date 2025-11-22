@@ -40,6 +40,19 @@ import { HTTPClient } from './http.js';
 import { Validator } from '../validation/validator.js';
 import { withRetry } from '../utils/retry.js';
 
+// Import new API classes
+import { PhoneNumbersAPI } from '../account/phone-numbers.js';
+import { RegistrationAPI } from '../account/registration.js';
+import { WABAManagementAPI } from '../account/waba.js';
+import { QRCodeAPI } from '../account/qr-codes.js';
+import { CommerceSettingsAPI } from '../account/commerce-settings.js';
+import { BlockUsersAPI } from '../account/block-users.js';
+import { TemplateManagementAPI } from '../templates/index.js';
+import { CommerceMessagesAPI } from '../messages/commerce.js';
+import { TypingIndicatorAPI } from '../messages/typing.js';
+import { WebhookSubscriptionAPI } from '../webhooks/subscribe.js';
+import { AnalyticsAPI } from '../analytics/index.js';
+
 // Import message functions
 import { sendText } from '../messages/text.js';
 import {
@@ -143,6 +156,61 @@ export class WhatsAppClient {
     ) => Promise<{ success: boolean }>;
     getConversationalAutomation: () => Promise<ConversationalAutomationResponse>;
   };
+
+  /**
+   * Phone Numbers API
+   */
+  public readonly phoneNumbers: PhoneNumbersAPI;
+
+  /**
+   * Registration API
+   */
+  public readonly registration: RegistrationAPI;
+
+  /**
+   * WABA Management API
+   */
+  public readonly waba: WABAManagementAPI;
+
+  /**
+   * QR Codes API
+   */
+  public readonly qrCodes: QRCodeAPI;
+
+  /**
+   * Commerce Settings API
+   */
+  public readonly commerceSettings: CommerceSettingsAPI;
+
+  /**
+   * Block Users API
+   */
+  public readonly blockUsers: BlockUsersAPI;
+
+  /**
+   * Template Management API
+   */
+  public readonly templates: TemplateManagementAPI;
+
+  /**
+   * Commerce Messages API
+   */
+  public readonly commerce: CommerceMessagesAPI;
+
+  /**
+   * Typing Indicator API
+   */
+  public readonly typing: TypingIndicatorAPI;
+
+  /**
+   * Webhook Subscription API
+   */
+  public readonly webhookSubscription: WebhookSubscriptionAPI;
+
+  /**
+   * Analytics API
+   */
+  public readonly analytics: AnalyticsAPI;
 
   constructor(config: WhatsAppClientConfig) {
     // Initialize HTTP client
@@ -255,6 +323,24 @@ export class WhatsAppClient {
           getConversationalAutomation(this.client, this.phoneNumberId, this.validator)
         ),
     };
+
+    // Initialize new API classes
+    this.phoneNumbers = new PhoneNumbersAPI(this.client, this.phoneNumberId);
+    this.registration = new RegistrationAPI(this.client, this.phoneNumberId);
+    this.waba = new WABAManagementAPI(this.client);
+    this.qrCodes = new QRCodeAPI(this.client, this.phoneNumberId);
+    this.commerceSettings = new CommerceSettingsAPI(this.client, this.phoneNumberId);
+    this.blockUsers = new BlockUsersAPI(this.client, this.phoneNumberId);
+    
+    // Note: Templates, Analytics need wabaId (not phoneNumberId)
+    // Users should pass wabaId when creating client or call these directly
+    const wabaId = (config as any).wabaId || this.phoneNumberId;
+    this.templates = new TemplateManagementAPI(this.client, wabaId);
+    this.analytics = new AnalyticsAPI(this.client, wabaId);
+    
+    this.commerce = new CommerceMessagesAPI(this.client, this.phoneNumberId);
+    this.typing = new TypingIndicatorAPI(this.client, this.phoneNumberId);
+    this.webhookSubscription = new WebhookSubscriptionAPI(this.client);
   }
 
   /**

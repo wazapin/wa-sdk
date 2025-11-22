@@ -41,7 +41,6 @@ export type {
   InteractiveCarouselCard,
   SendInteractiveCarouselParams,
   TemplateParameter,
-  TemplateComponent,
   SendTemplateParams,
   InteractiveCTAHeader,
   InteractiveCTAAction,
@@ -105,3 +104,91 @@ export type {
   ConfigureConversationalAutomationParams,
   ConversationalAutomationResponse,
 } from './account.js';
+
+// Phone Numbers types
+export type {
+  QualityRating,
+  DisplayNameStatus,
+  VerificationMethod,
+  PhoneNumberDetails,
+  PhoneNumbersListResponse,
+  RequestVerificationCodeParams,
+  VerifyCodeParams,
+  SetTwoStepPinParams,
+  DisplayNameStatusResponse,
+  PhoneNumberFilterParams,
+} from './phone-numbers.js';
+
+// Registration types
+export type {
+  RegisterPhoneParams,
+  RegistrationResponse,
+} from './registration.js';
+
+// WABA types
+export type {
+  WABADetails,
+  WABAListResponse,
+} from './waba.js';
+
+// Template types
+export type {
+  TemplateStatus,
+  TemplateCategory,
+  TemplateComponentType,
+  TemplateHeaderFormat,
+  TemplateButtonType,
+  TemplateComponentParameter,
+  TemplateButton,
+  TemplateComponent,
+  Template,
+  TemplateListResponse,
+  TemplateNamespaceResponse,
+  CreateTemplateParams,
+  CreateAuthTemplateParams,
+  CreateCatalogTemplateParams,
+  EditTemplateParams,
+  TemplateCreateResponse,
+} from './template.js';
+
+// Commerce types
+export type {
+  ProductSection,
+  SendSingleProductParams,
+  SendMultiProductParams,
+  SendCatalogParams,
+  SendCatalogTemplateParams,
+} from './commerce.js';
+
+// QR Codes types
+export type {
+  QRCodeFormat,
+  QRCodeDetails,
+  QRCodeListResponse,
+  CreateQRCodeParams,
+  QRCodeCreateResponse,
+  UpdateQRCodeParams,
+  QRCodeImageURLResponse,
+} from './qr-codes.js';
+
+// Commerce Settings types
+export type {
+  CommerceSettings,
+  UpdateCommerceSettingsParams,
+  CommerceSettingsResponse,
+} from './commerce-settings.js';
+
+// Block Users types
+export type {
+  BlockedUser,
+  BlockedUsersListResponse,
+} from './block-users.js';
+
+// Analytics types
+export type {
+  AnalyticsGranularity,
+  AnalyticsMetricType,
+  AnalyticsParams,
+  AnalyticsDataPoint,
+  AnalyticsData,
+} from './analytics.js';
