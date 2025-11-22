@@ -26,7 +26,7 @@ export type TemplateHeaderFormat = 'TEXT' | 'IMAGE' | 'VIDEO' | 'DOCUMENT' | 'LO
 /**
  * Template button type
  */
-export type TemplateButtonType = 'QUICK_REPLY' | 'PHONE_NUMBER' | 'URL' | 'COPY_CODE' | 'OTP';
+export type TemplateButtonType = 'QUICK_REPLY' | 'PHONE_NUMBER' | 'URL' | 'COPY_CODE' | 'OTP' | 'CATALOG';
 
 /**
  * Template component parameter

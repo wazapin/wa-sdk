@@ -217,8 +217,7 @@ describe('TemplateManagementAPI', () => {
 
         await templateAPI.getAllTemplates({
           fields: ['id', 'name', 'status'],
-    });
-
+        });
 
         expect(mockHttpClient.get).toHaveBeenCalledWith(`${testWabaId}/message_templates?fields=id%2Cname%2Cstatus`);
       });
@@ -232,8 +231,7 @@ describe('TemplateManagementAPI', () => {
 
         await templateAPI.getAllTemplates({
           limit: 10,
-    });
-
+        });
 
         expect(mockHttpClient.get).toHaveBeenCalledWith(`${testWabaId}/message_templates?limit=10`);
       });
@@ -288,7 +286,7 @@ describe('TemplateManagementAPI', () => {
           category: 'MARKETING',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         const result = await templateAPI.createTemplate({
           name: 'test_template',
@@ -300,7 +298,7 @@ describe('TemplateManagementAPI', () => {
               text: 'Hello {{1}}!',
             },
           ],
-        }));
+        });
 
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(`${testWabaId}/message_templates`, expect.objectContaining({
@@ -320,7 +318,7 @@ describe('TemplateManagementAPI', () => {
           category: 'MARKETING',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.createTemplate({
           name: 'test_template',
@@ -339,10 +337,10 @@ describe('TemplateManagementAPI', () => {
           ],
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-        expect(callArgs.data).toHaveProperty('components');
-        expect(callArgs.data.components).toHaveLength(2);
-        expect(callArgs.data.components[0].type).toBe('HEADER');
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+        expect(callArgs).toHaveProperty('components');
+        expect(callArgs.components).toHaveLength(2);
+        expect(callArgs.components[0].type).toBe('HEADER');
       });
 
       it('should create template with buttons', async () => {
@@ -352,7 +350,7 @@ describe('TemplateManagementAPI', () => {
           category: 'MARKETING',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.createTemplate({
           name: 'test_template',
@@ -379,9 +377,9 @@ describe('TemplateManagementAPI', () => {
           ],
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-        expect(callArgs.data.components[1].type).toBe('BUTTONS');
-        expect(callArgs.data.components[1].buttons).toHaveLength(2);
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+        expect(callArgs.components[1].type).toBe('BUTTONS');
+        expect(callArgs.components[1].buttons).toHaveLength(2);
       });
 
       it('should support allow_category_change parameter', async () => {
@@ -391,7 +389,7 @@ describe('TemplateManagementAPI', () => {
           category: 'UTILITY',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.createTemplate({
           name: 'test_template',
@@ -406,8 +404,8 @@ describe('TemplateManagementAPI', () => {
           allow_category_change: true,
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-        expect(callArgs.data.allow_category_change).toBe(true);
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+        expect(callArgs.allow_category_change).toBe(true);
       });
     });
 
@@ -419,7 +417,7 @@ describe('TemplateManagementAPI', () => {
           category: 'AUTHENTICATION',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         const result = await templateAPI.createAuthenticationTemplate({
           name: 'auth_template',
@@ -453,7 +451,7 @@ describe('TemplateManagementAPI', () => {
           category: 'AUTHENTICATION',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.createAuthenticationTemplate({
           name: 'auth_template_onetap',
@@ -464,8 +462,8 @@ describe('TemplateManagementAPI', () => {
           signature_hash: 'hash123',
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-        const buttonsComponent = callArgs.data.components.find((c: any) => c.type === 'BUTTONS');
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+        const buttonsComponent = callArgs.components.find((c: any) => c.type === 'BUTTONS');
         expect(buttonsComponent.buttons[0].otp_type).toBe('ONE_TAP');
         expect(buttonsComponent.buttons[0].package_name).toBe('com.example.app');
       });
@@ -477,7 +475,7 @@ describe('TemplateManagementAPI', () => {
           category: 'AUTHENTICATION',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.createAuthenticationTemplate({
           name: 'auth_template',
@@ -486,8 +484,8 @@ describe('TemplateManagementAPI', () => {
           security_disclaimer: 'Custom security message',
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-        const footerComponent = callArgs.data.components.find((c: any) => c.type === 'FOOTER');
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+        const footerComponent = callArgs.components.find((c: any) => c.type === 'FOOTER');
         expect(footerComponent.text).toBe('Custom security message');
       });
     });
@@ -500,7 +498,7 @@ describe('TemplateManagementAPI', () => {
           category: 'MARKETING',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         const result = await templateAPI.createCatalogTemplate({
           name: 'catalog_template',
@@ -533,7 +531,7 @@ describe('TemplateManagementAPI', () => {
           category: 'MARKETING',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.createCatalogTemplate({
           name: 'catalog_template',
@@ -542,8 +540,8 @@ describe('TemplateManagementAPI', () => {
           body_text: 'Check out our products!',
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-        const headerComponent = callArgs.data.components.find((c: any) => c.type === 'HEADER');
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+        const headerComponent = callArgs.components.find((c: any) => c.type === 'HEADER');
         expect(headerComponent).toBeDefined();
         expect(headerComponent.text).toBe('New Arrivals');
       });
@@ -555,7 +553,7 @@ describe('TemplateManagementAPI', () => {
           category: 'MARKETING',
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.createCatalogTemplate({
           name: 'catalog_template',
@@ -564,8 +562,8 @@ describe('TemplateManagementAPI', () => {
           footer_text: 'Limited time offer',
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-        const footerComponent = callArgs.data.components.find((c: any) => c.type === 'FOOTER');
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+        const footerComponent = callArgs.components.find((c: any) => c.type === 'FOOTER');
         expect(footerComponent).toBeDefined();
         expect(footerComponent.text).toBe('Limited time offer');
       });
@@ -577,21 +575,20 @@ describe('TemplateManagementAPI', () => {
       it('should edit template category', async () => {
         const mockResponse = { success: true };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         const result = await templateAPI.editTemplate(testTemplateId, {
           category: 'UTILITY',
-    });
+        });
 
-
-        expect(mockHttpClient.post).toHaveBeenCalledWith(`${testTemplateId}`, { category: 'UTILITY' );
+        expect(mockHttpClient.post).toHaveBeenCalledWith(`${testTemplateId}`, { category: 'UTILITY' });
         expect(result.success).toBe(true);
       });
 
       it('should edit template components', async () => {
         const mockResponse = { success: true };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.editTemplate(testTemplateId, {
           components: [
@@ -602,9 +599,9 @@ describe('TemplateManagementAPI', () => {
           ],
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-        expect(callArgs.data.components).toBeDefined();
-        expect(callArgs.data.components[0].text).toBe('Updated text');
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+        expect(callArgs.components).toBeDefined();
+        expect(callArgs.components[0].text).toBe('Updated text');
       });
     });
 
@@ -623,7 +620,7 @@ describe('TemplateManagementAPI', () => {
       it('should URL encode template name', async () => {
         const mockResponse = { success: true };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         await templateAPI.deleteTemplateByName('test template with spaces');
 
