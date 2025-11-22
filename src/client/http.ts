@@ -166,8 +166,21 @@ export class HTTPClient {
   /**
    * Make a GET request
    */
-  async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>('GET', endpoint);
+  async get<T>(
+    endpoint: string,
+    params?: Record<string, string | number | boolean>
+  ): Promise<T> {
+    let url = endpoint;
+    
+    if (params && Object.keys(params).length > 0) {
+      const searchParams = new URLSearchParams();
+      for (const [key, value] of Object.entries(params)) {
+        searchParams.append(key, String(value));
+      }
+      url = `${endpoint}?${searchParams.toString()}`;
+    }
+    
+    return this.request<T>('GET', url);
   }
 
   /**
@@ -182,5 +195,72 @@ export class HTTPClient {
    */
   async delete<T>(endpoint: string): Promise<T> {
     return this.request<T>('DELETE', endpoint);
+  }
+
+  /**
+   * Make a POST request with multipart/form-data
+   * Used for file uploads (e.g., Flow JSON)
+   */
+  async postMultipart<T>(endpoint: string, formData: FormData): Promise<T> {
+    const url = `${this.baseUrl}/${this.apiVersion}/${endpoint}`;
+
+    this.logger.debug(`POST (multipart) ${endpoint}`);
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+      const response = await this.fetchImpl(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          'User-Agent': this.userAgent,
+          'Wazapin-SDK-Version': this.sdkVersion,
+          // Note: Do NOT set Content-Type for FormData
+          // Browser/Node will set it automatically with boundary
+        },
+        body: formData,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw await this.handleError(response);
+      }
+
+      const data = (await response.json()) as T;
+      this.logger.debug(`POST (multipart) ${endpoint} - Success`, {
+        status: response.status,
+      });
+
+      return data;
+    } catch (error) {
+      this.logger.error(`POST (multipart) ${endpoint} - Failed`, { error });
+
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new NetworkError(
+          `Request timeout after ${this.timeout}ms`,
+          error
+        );
+      }
+
+      if (error instanceof TypeError) {
+        throw new NetworkError('Network request failed', error);
+      }
+
+      if (
+        error instanceof APIError ||
+        error instanceof RateLimitError ||
+        error instanceof NetworkError
+      ) {
+        throw error;
+      }
+
+      throw new NetworkError(
+        'An unexpected error occurred',
+        error instanceof Error ? error : undefined
+      );
+    }
   }
 }

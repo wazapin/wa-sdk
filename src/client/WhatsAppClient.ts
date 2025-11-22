@@ -57,6 +57,7 @@ import { CommerceMessagesAPI } from '../messages/commerce.js';
 import { TypingIndicatorAPI } from '../messages/typing.js';
 import { WebhookSubscriptionAPI } from '../webhooks/subscribe.js';
 import { AnalyticsAPI } from '../analytics/index.js';
+import { FlowsAPI } from '../messaging/flows.js';
 
 // Import message functions
 import { sendText } from '../messages/text.js';
@@ -238,6 +239,11 @@ export class WhatsAppClient {
    */
   public readonly analytics: AnalyticsAPI;
 
+  /**
+   * Flows API for creating and managing WhatsApp Flows
+   */
+  public readonly flows: FlowsAPI;
+
   constructor(config: WhatsAppClientConfig) {
     // Initialize logger
     this.logger = config.logger instanceof WazapinLogger
@@ -382,6 +388,7 @@ export class WhatsAppClient {
     this.commerce = new CommerceMessagesAPI(this.client, this.phoneNumberId);
     this.typing = new TypingIndicatorAPI(this.client, this.phoneNumberId);
     this.webhookSubscription = new WebhookSubscriptionAPI(this.client);
+    this.flows = new FlowsAPI(this.client, wabaId);
   }
 
   /**
