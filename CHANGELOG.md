@@ -7,6 +7,103 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **WhatsApp Flows API** - Complete implementation for creating and managing interactive flows
+  - `flows.create()` - Create new flows with categories and endpoints
+  - `flows.list()` - List all flows for a WABA
+  - `flows.get()` - Get flow details with health status and validation
+  - `flows.update()` - Update flow metadata and endpoints
+  - `flows.delete()` - Delete draft flows
+  - `flows.publish()` - Publish flows (makes them immutable)
+  - `flows.deprecate()` - Deprecate published flows
+  - `flows.uploadJSON()` - Upload Flow JSON definitions with validation
+  - `flows.listAssets()` - List and get Flow JSON download URLs
+  - `flows.getPreview()` - Get preview URLs for testing flows
+  - `flows.migrate()` - Migrate flows between WABAs
+  - `flows.getAnalytics()` - Get flow performance metrics (5 types)
+  - `flows.send()` - Send flow messages to users (draft/published)
+- **Flow Analytics Metrics**
+  - `ENDPOINT_REQUEST_COUNT` - Track endpoint call volume
+  - `ENDPOINT_REQUEST_ERROR` - Monitor endpoint errors
+  - `ENDPOINT_REQUEST_ERROR_RATE` - Calculate error rates
+  - `ENDPOINT_REQUEST_LATENCY_SECONDS_CEIL` - Monitor latency
+  - `ENDPOINT_AVAILABILITY` - Check endpoint health
+- **HTTP Client Enhancements**
+  - Added `postMultipart()` method for form-data file uploads
+  - Added query parameters support to `get()` method
+  - Support for FormData uploads (Flow JSON files)
+- **New TypeScript Interfaces** - 30+ Flow-related types
+  - `FlowDetails`, `CreateFlowParams`, `UpdateFlowParams`
+  - `FlowValidationError`, `FlowHealthStatus`, `FlowPreview`
+  - `MigrateFlowsParams`, `FlowMigrationResult`
+  - `FlowAnalyticsParams`, `FlowAnalyticsResponse`
+  - `SendFlowParams`, `FlowActionPayload`
+- **Comprehensive Testing** - 26 new tests for Flows API
+  - Flow CRUD operations (create, read, update, delete)
+  - Flow lifecycle (publish, deprecate, clone, migrate)
+  - Flow assets (upload JSON, list assets, get preview)
+  - Flow analytics (all 5 metric types)
+  - Flow messaging (send draft/published flows)
+  - Total: 491 tests passing (100% success rate)
+
+### Documentation
+- Added complete "WhatsApp Flows Management" section in README
+  - Flow creation and publishing workflows
+  - Flow management examples (update, deprecate, delete)
+  - Clone and migration guide
+  - Analytics monitoring with all metric types
+  - Asset management (upload JSON, get download URLs)
+- Added "Flow Messages" section in messaging docs
+  - Send published flows by ID
+  - Send draft flows by name for testing
+  - Flow action payloads and navigation
+  - Flow tokens for session management
+
+### Technical
+- Zero breaking changes - fully backward compatible
+- Complete JSDoc documentation with examples
+- TypeScript build successful with no errors
+
+### Previous Additions
+- **Embedded Signup API** - Complete implementation for WhatsApp Business onboarding
+  - `embeddedSignup.debugToken()` - Debug OAuth token to get shared WABA IDs
+  - `embeddedSignup.listSharedWABAs()` - List client WABAs shared via embedded signup
+  - `embeddedSignup.listOwnedWABAs()` - List owned/client WABAs with filtering and sorting
+  - `embeddedSignup.getWABAInfo()` - Get detailed WABA information with field selection
+  - `embeddedSignup.getAssignedUsers()` - List users assigned to a WABA
+  - `embeddedSignup.addSystemUser()` - Add system user with MANAGE/DEVELOP permissions
+  - `embeddedSignup.listSystemUsers()` - Get business system users
+  - `embeddedSignup.getExtendedCredits()` - Get credit lines for billing
+  - `embeddedSignup.attachCreditLine()` - Share credit line with client WABA
+  - `embeddedSignup.verifyCreditSharing()` - Verify credit sharing was successful
+  - `embeddedSignup.getCreditSharingRecord()` - Get credit sharing record details
+  - `embeddedSignup.revokeCreditSharing()` - Remove credit line access
+  - `embeddedSignup.subscribeToWABA()` - Subscribe app to WABA webhooks
+  - `embeddedSignup.listSubscriptions()` - List all webhook subscriptions
+  - `embeddedSignup.unsubscribeFromWABA()` - Remove webhook subscription
+  - `embeddedSignup.overrideCallbackURL()` - Set alternate webhook URL per WABA
+  - `embeddedSignup.listPhoneNumbers()` - List phone numbers with filtering
+  - `embeddedSignup.getPhoneNumberCertificate()` - Get display name certificates
+  - `embeddedSignup.listMessageTemplates()` - Get pre-approved templates
+  - `embeddedSignup.getTemplateNamespace()` - Get template namespace
+- **New TypeScript Interfaces** - Complete type safety for embedded signup
+  - `DebugTokenResponse`, `WABAInfo`, `FilterWABAOptions`
+  - `SystemUser`, `AssignedUser`, `AddSystemUserParams`
+  - `AttachCreditLineParams`, `AllocationConfigResponse`, `CreditSharingRecord`
+  - `OverrideCallbackParams`, `WABASubscription`, `PhoneNumberCertificate`
+- **Comprehensive Tests** - 21 unit tests covering all embedded signup functionality
+  - WABA management (debug token, list, filter, get info)
+  - System users (list, add, get assigned)
+  - Credit line management (get, attach, verify, revoke)
+  - Webhook subscriptions (subscribe, list, unsubscribe, override)
+  - Phone numbers and templates (list, certificates, namespace)
+
+### Technical
+- All 439 tests passing (418 existing + 21 new)
+- Zero breaking changes - fully backward compatible
+- Complete JSDoc documentation with examples
+- TypeScript build successful with no errors
+
 ## [1.1.0] - 2025-11-22
 
 ### Added

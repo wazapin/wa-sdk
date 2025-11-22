@@ -8,3 +8,4 @@ export {
   configureConversationalAutomation,
   getConversationalAutomation,
 } from './conversational-components.js';
+export { EmbeddedSignupAPI } from './embedded-signup.js';

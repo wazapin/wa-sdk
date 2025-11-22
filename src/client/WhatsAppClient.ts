@@ -51,11 +51,13 @@ import { BlockUsersAPI } from '../account/block-users.js';
 import { BusinessAccountsAPI } from '../account/business-accounts.js';
 import { TwoStepVerificationAPI } from '../account/two-step-verification.js';
 import { SharedWABAsAPI } from '../account/shared-wabas.js';
+import { EmbeddedSignupAPI } from '../account/embedded-signup.js';
 import { TemplateManagementAPI } from '../templates/index.js';
 import { CommerceMessagesAPI } from '../messages/commerce.js';
 import { TypingIndicatorAPI } from '../messages/typing.js';
 import { WebhookSubscriptionAPI } from '../webhooks/subscribe.js';
 import { AnalyticsAPI } from '../analytics/index.js';
+import { FlowsAPI } from '../messaging/flows.js';
 
 // Import message functions
 import { sendText } from '../messages/text.js';
@@ -208,6 +210,11 @@ export class WhatsAppClient {
   public readonly sharedWABAs: SharedWABAsAPI;
 
   /**
+   * Embedded Signup API for business onboarding
+   */
+  public readonly embeddedSignup: EmbeddedSignupAPI;
+
+  /**
    * Template Management API
    */
   public readonly templates: TemplateManagementAPI;
@@ -231,6 +238,11 @@ export class WhatsAppClient {
    * Analytics API
    */
   public readonly analytics: AnalyticsAPI;
+
+  /**
+   * Flows API for creating and managing WhatsApp Flows
+   */
+  public readonly flows: FlowsAPI;
 
   constructor(config: WhatsAppClientConfig) {
     // Initialize logger
@@ -365,6 +377,7 @@ export class WhatsAppClient {
     this.businessAccounts = new BusinessAccountsAPI(this.client);
     this.twoStepVerification = new TwoStepVerificationAPI(this.client);
     this.sharedWABAs = new SharedWABAsAPI(this.client);
+    this.embeddedSignup = new EmbeddedSignupAPI(this.client);
     
     // Note: Templates, Analytics need wabaId (not phoneNumberId)
     // Users should pass wabaId when creating client or call these directly
@@ -375,6 +388,7 @@ export class WhatsAppClient {
     this.commerce = new CommerceMessagesAPI(this.client, this.phoneNumberId);
     this.typing = new TypingIndicatorAPI(this.client, this.phoneNumberId);
     this.webhookSubscription = new WebhookSubscriptionAPI(this.client);
+    this.flows = new FlowsAPI(this.client, wabaId);
   }
 
   /**
