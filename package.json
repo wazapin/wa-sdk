@@ -25,6 +25,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:real": "npm run build && tsx examples/test-real-api.ts",
+    "test:real:watch": "tsx watch examples/test-real-api.ts",
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
