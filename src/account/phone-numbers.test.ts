@@ -72,7 +72,8 @@ describe('PhoneNumbersAPI', () => {
 
       await phoneNumbersAPI.getPhoneNumbers(testWabaId, {
         fields: ['id', 'verified_name', 'quality_rating'],
-      });
+    });
+
 
       expect(mockHttpClient.get).toHaveBeenCalledWith(`${testWabaId}/phone_numbers?fields=id%2Cverified_name%2Cquality_rating`);
     });
@@ -100,7 +101,8 @@ describe('PhoneNumbersAPI', () => {
             value: 'SANDBOX',
           },
         ],
-      });
+      }));
+
 
       expect(mockHttpClient.get).toHaveBeenCalledWith(expect.stringContaining('filtering'));
     });
@@ -267,12 +269,13 @@ describe('PhoneNumbersAPI', () => {
       const result = await phoneNumbersAPI.requestVerificationCode({
         code_method: 'SMS',
         locale: 'en_US',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/request_code`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/request_code`, {
           code_method: 'SMS',
           locale: 'en_US',
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -284,12 +287,13 @@ describe('PhoneNumbersAPI', () => {
       const result = await phoneNumbersAPI.requestVerificationCode({
         code_method: 'VOICE',
         locale: 'en_US',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/request_code`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/request_code`, {
           code_method: 'VOICE',
           locale: 'en_US',
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -303,7 +307,8 @@ describe('PhoneNumbersAPI', () => {
         await phoneNumbersAPI.requestVerificationCode({
           code_method: 'SMS',
           locale,
-        });
+    });
+
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -329,10 +334,10 @@ describe('PhoneNumbersAPI', () => {
         customPhoneNumberId,
       );
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${customPhoneNumberId}/request_code`, {
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${customPhoneNumberId}/request_code`, {
           code_method: 'SMS',
           locale: 'en_US',
-        ));
+        );
     });
   });
 
@@ -344,11 +349,12 @@ describe('PhoneNumbersAPI', () => {
 
       const result = await phoneNumbersAPI.verifyCode({
         code: '123456',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/verify_code`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/verify_code`, {
           code: '123456',
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -365,9 +371,9 @@ describe('PhoneNumbersAPI', () => {
         customPhoneNumberId,
       );
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${customPhoneNumberId}/verify_code`, {
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${customPhoneNumberId}/verify_code`, {
           code: '123456',
-        ));
+        );
     });
   });
 
@@ -379,11 +385,12 @@ describe('PhoneNumbersAPI', () => {
 
       const result = await phoneNumbersAPI.setTwoStepPin({
         pin: '123456',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}`, {
           pin: '123456',
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -400,9 +407,9 @@ describe('PhoneNumbersAPI', () => {
         customPhoneNumberId,
       );
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${customPhoneNumberId}`, {
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${customPhoneNumberId}`, {
           pin: '654321',
-        ));
+        );
     });
   });
 });

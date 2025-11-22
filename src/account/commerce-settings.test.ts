@@ -70,11 +70,12 @@ describe('CommerceSettingsAPI', () => {
 
       const result = await commerceSettingsAPI.updateCommerceSettings({
         is_catalog_visible: true,
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/whatsapp_commerce_settings`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/whatsapp_commerce_settings`, {
           is_catalog_visible: true,
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -85,11 +86,12 @@ describe('CommerceSettingsAPI', () => {
 
       const result = await commerceSettingsAPI.updateCommerceSettings({
         is_cart_enabled: true,
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/whatsapp_commerce_settings`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/whatsapp_commerce_settings`, {
           is_cart_enabled: true,
-        ));
+        );
       expect(result.success).toBe(true);
     });
 

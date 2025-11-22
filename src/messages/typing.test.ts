@@ -32,9 +32,10 @@ describe('TypingIndicatorAPI', () => {
       const result = await typingAPI.sendTypingIndicator({
         to: testRecipient,
         action: 'typing',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/messages`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
           messaging_product: 'whatsapp',
           recipient_type: 'individual',
           to: testRecipient,
@@ -42,7 +43,7 @@ describe('TypingIndicatorAPI', () => {
           chat_state: {
             action: 'typing',
           },
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -54,9 +55,10 @@ describe('TypingIndicatorAPI', () => {
       const result = await typingAPI.sendTypingIndicator({
         to: testRecipient,
         action: 'stop_typing',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/messages`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
           messaging_product: 'whatsapp',
           recipient_type: 'individual',
           to: testRecipient,
@@ -64,7 +66,7 @@ describe('TypingIndicatorAPI', () => {
           chat_state: {
             action: 'stop_typing',
           },
-        ));
+        );
       expect(result.success).toBe(true);
     });
 

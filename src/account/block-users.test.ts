@@ -32,9 +32,9 @@ describe('BlockUsersAPI', () => {
 
       const result = await blockUsersAPI.blockUser(testUserPhone);
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/block`, {
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/block`, {
           phone_number: testUserPhone,
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -66,9 +66,9 @@ describe('BlockUsersAPI', () => {
 
       const result = await blockUsersAPI.unblockUser(testUserPhone);
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/unblock`, {
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/unblock`, {
           phone_number: testUserPhone,
-        ));
+        );
       expect(result.success).toBe(true);
     });
 

@@ -34,12 +34,13 @@ describe('RegistrationAPI', () => {
       const result = await registrationAPI.registerPhone({
         messaging_product: 'whatsapp',
         pin: '123456',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/register`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/register`, {
           messaging_product: 'whatsapp',
           pin: '123456',
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -53,12 +54,13 @@ describe('RegistrationAPI', () => {
       await registrationAPI.registerPhone({
         messaging_product: 'whatsapp',
         pin: '123456',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/register`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/register`, {
           messaging_product: 'whatsapp',
           pin: '123456',
-        ));
+        );
     });
 
     it('should use custom phone number ID if provided', async () => {
@@ -77,10 +79,10 @@ describe('RegistrationAPI', () => {
         customPhoneNumberId,
       );
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${customPhoneNumberId}/register`, {
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${customPhoneNumberId}/register`, {
           messaging_product: 'whatsapp',
           pin: '123456',
-        ));
+        );
     });
 
     it('should accept 6-digit PIN', async () => {
@@ -96,7 +98,8 @@ describe('RegistrationAPI', () => {
         await registrationAPI.registerPhone({
           messaging_product: 'whatsapp',
           pin,
-        });
+    });
+
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -118,7 +121,8 @@ describe('RegistrationAPI', () => {
       await registrationAPI.registerPhone({
         messaging_product: 'whatsapp',
         pin: '123456',
-      });
+    });
+
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         expect.objectContaining({

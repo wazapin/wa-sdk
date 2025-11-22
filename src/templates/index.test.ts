@@ -217,7 +217,8 @@ describe('TemplateManagementAPI', () => {
 
         await templateAPI.getAllTemplates({
           fields: ['id', 'name', 'status'],
-        });
+    });
+
 
         expect(mockHttpClient.get).toHaveBeenCalledWith(`${testWabaId}/message_templates?fields=id%2Cname%2Cstatus`);
       });
@@ -231,7 +232,8 @@ describe('TemplateManagementAPI', () => {
 
         await templateAPI.getAllTemplates({
           limit: 10,
-        });
+    });
+
 
         expect(mockHttpClient.get).toHaveBeenCalledWith(`${testWabaId}/message_templates?limit=10`);
       });
@@ -298,13 +300,15 @@ describe('TemplateManagementAPI', () => {
               text: 'Hello {{1}}!',
             },
           ],
-        });
+        }));
 
-        expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testWabaId}/message_templates`, expect.objectContaining({
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(`${testWabaId}/message_templates`, expect.objectContaining({
             name: 'test_template',
             language: 'en',
             category: 'MARKETING',
           }));
+
         expect(result.id).toBe(testTemplateId);
         expect(result.status).toBe('PENDING');
       });
@@ -421,9 +425,10 @@ describe('TemplateManagementAPI', () => {
           name: 'auth_template',
           language: 'en',
           button_type: 'COPY_CODE',
-        });
+    });
 
-        expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testWabaId}/message_templates`, expect.objectContaining({
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(`${testWabaId}/message_templates`, expect.objectContaining({
             name: 'auth_template',
             category: 'AUTHENTICATION',
             components: expect.arrayContaining([
@@ -437,6 +442,7 @@ describe('TemplateManagementAPI', () => {
               }),
             ]),
           }));
+
         expect(result.category).toBe('AUTHENTICATION');
       });
 
@@ -500,9 +506,10 @@ describe('TemplateManagementAPI', () => {
           name: 'catalog_template',
           language: 'en',
           body_text: 'Check out our products!',
-        });
+    });
 
-        expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testWabaId}/message_templates`, expect.objectContaining({
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(`${testWabaId}/message_templates`, expect.objectContaining({
             name: 'catalog_template',
             category: 'MARKETING',
             components: expect.arrayContaining([
@@ -515,6 +522,7 @@ describe('TemplateManagementAPI', () => {
               }),
             ]),
           }));
+
         expect(result.category).toBe('MARKETING');
       });
 
@@ -573,9 +581,10 @@ describe('TemplateManagementAPI', () => {
 
         const result = await templateAPI.editTemplate(testTemplateId, {
           category: 'UTILITY',
-        });
+    });
 
-        expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testTemplateId}`, { category: 'UTILITY' ));
+
+        expect(mockHttpClient.post).toHaveBeenCalledWith(`${testTemplateId}`, { category: 'UTILITY' );
         expect(result.success).toBe(true);
       });
 

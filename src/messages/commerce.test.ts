@@ -38,9 +38,10 @@ describe('CommerceMessagesAPI', () => {
         to: testRecipient,
         catalog_id: 'catalog_123',
         product_retailer_id: 'product_456',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/messages`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
           messaging_product: 'whatsapp',
           recipient_type: 'individual',
           to: testRecipient,
@@ -52,7 +53,7 @@ describe('CommerceMessagesAPI', () => {
               product_retailer_id: 'product_456',
             },
           },
-        ));
+        );
       expect(result.messages[0].id).toBe('wamid.test123');
     });
 
@@ -146,9 +147,10 @@ describe('CommerceMessagesAPI', () => {
             ],
           },
         ],
-      });
+      }));
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/messages`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
           messaging_product: 'whatsapp',
           recipient_type: 'individual',
           to: testRecipient,
@@ -171,7 +173,7 @@ describe('CommerceMessagesAPI', () => {
               ],
             },
           },
-        ));
+        );
       expect(result.messages[0].id).toBe('wamid.test123');
     });
 
@@ -310,9 +312,10 @@ describe('CommerceMessagesAPI', () => {
       const result = await commerceAPI.sendCatalog({
         to: testRecipient,
         body: 'Browse our full catalog',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/messages`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
           messaging_product: 'whatsapp',
           recipient_type: 'individual',
           to: testRecipient,
@@ -326,7 +329,7 @@ describe('CommerceMessagesAPI', () => {
               name: 'catalog_message',
             },
           },
-        ));
+        );
       expect(result.messages[0].id).toBe('wamid.test123');
     });
 
@@ -366,9 +369,10 @@ describe('CommerceMessagesAPI', () => {
         to: testRecipient,
         template_name: 'catalog_promo',
         language_code: 'en_US',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/messages`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
           messaging_product: 'whatsapp',
           to: testRecipient,
           type: 'template',
@@ -379,7 +383,7 @@ describe('CommerceMessagesAPI', () => {
             },
             components: undefined,
           },
-        ));
+        );
       expect(result.messages[0].id).toBe('wamid.test123');
     });
 

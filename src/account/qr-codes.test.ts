@@ -188,7 +188,7 @@ describe('QRCodeAPI', () => {
 
       const result = await qrCodeAPI.createQRCode();
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/message_qrdls`, {));
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {);
       expect(result.code).toBe(testQRCodeId);
     });
 
@@ -203,11 +203,12 @@ describe('QRCodeAPI', () => {
 
       const result = await qrCodeAPI.createQRCode({
         prefilled_message: 'Hello, I need help',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/message_qrdls`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {
           prefilled_message: 'Hello, I need help',
-        ));
+        );
       expect(result.prefilled_message).toBe('Hello, I need help');
     });
 
@@ -223,11 +224,12 @@ describe('QRCodeAPI', () => {
 
       const result = await qrCodeAPI.createQRCode({
         generate_qr_image: 'SVG',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/message_qrdls`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {
           generate_qr_image: 'SVG',
-        ));
+        );
       expect(result.qr_image_url).toBeDefined();
     });
 
@@ -243,11 +245,12 @@ describe('QRCodeAPI', () => {
 
       const result = await qrCodeAPI.createQRCode({
         generate_qr_image: 'PNG',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testPhoneNumberId}/message_qrdls`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {
           generate_qr_image: 'PNG',
-        ));
+        );
       expect(result.qr_image_url).toBeDefined();
     });
 
@@ -264,7 +267,8 @@ describe('QRCodeAPI', () => {
       const result = await qrCodeAPI.createQRCode({
         prefilled_message: 'Contact us',
         generate_qr_image: 'SVG',
-      });
+    });
+
 
       expect(result.prefilled_message).toBe('Contact us');
       expect(result.qr_image_url).toBeDefined();
@@ -279,11 +283,12 @@ describe('QRCodeAPI', () => {
 
       const result = await qrCodeAPI.updateQRCode(testQRCodeId, {
         prefilled_message: 'Updated message',
-      });
+    });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`/${testQRCodeId}`, {
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testQRCodeId}`, {
           prefilled_message: 'Updated message',
-        ));
+        );
       expect(result.success).toBe(true);
     });
 
@@ -327,7 +332,8 @@ describe('QRCodeAPI', () => {
 
       const result = await qrCodeAPI.createQRCode({
         prefilled_message: maxLengthMessage,
-      });
+    });
+
 
       expect(result.prefilled_message).toHaveLength(60);
     });
@@ -349,9 +355,10 @@ describe('QRCodeAPI', () => {
 
         const result = await qrCodeAPI.createQRCode({
           generate_qr_image: format,
-        });
+    });
 
-        expect(result.qr_image_url).toContain(format.toLowerCase());
+
+        expect(result.qr_image_url).toContain(format.toLowerCase();
       }
     });
   });

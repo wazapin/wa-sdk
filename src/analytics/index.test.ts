@@ -42,7 +42,7 @@ describe('AnalyticsAPI', () => {
         end: 1609545600,
       });
 
-      expect(mockHttpClient.get).toHaveBeenCalledWith(expect.stringContaining(`/${testWabaId}/conversation_analytics`));
+      expect(mockHttpClient.get).toHaveBeenCalledWith(expect.stringContaining(`${testWabaId}/conversation_analytics`));
       expect(result.data).toHaveLength(1);
       expect(result.data[0].conversation_start).toBe(100);
     });
@@ -127,9 +127,9 @@ describe('AnalyticsAPI', () => {
       });
 
       const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.url).toContain('granularity=DAILY');
-      expect(callArgs.url).toContain('phone_numbers');
-      expect(callArgs.url).toContain('country_codes');
+      expect(callArgs).toContain('granularity=DAILY');
+      expect(callArgs).toContain('phone_numbers');
+      expect(callArgs).toContain('country_codes');
     });
 
     it('should handle ISO 8601 date format', async () => {
@@ -192,7 +192,7 @@ describe('AnalyticsAPI', () => {
         end: 1609545600,
       });
 
-      expect(mockHttpClient.get).toHaveBeenCalledWith(expect.stringContaining(`/${testWabaId}/analytics`));
+      expect(mockHttpClient.get).toHaveBeenCalledWith(expect.stringContaining(`${testWabaId}/analytics`));
       expect(result.data).toHaveLength(1);
       expect(result.data[0].sent).toBe(500);
       expect(result.data[0].delivered).toBe(480);
