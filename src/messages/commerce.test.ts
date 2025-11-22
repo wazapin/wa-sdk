@@ -32,28 +32,27 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await commerceAPI.sendSingleProduct({
         to: testRecipient,
         catalog_id: 'catalog_123',
         product_retailer_id: 'product_456',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
-          to: testRecipient,
-          type: 'interactive',
-          interactive: {
-            type: 'product',
-            action: {
-              catalog_id: 'catalog_123',
-              product_retailer_id: 'product_456',
-            },
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: testRecipient,
+        type: 'interactive',
+        interactive: {
+          type: 'product',
+          action: {
+            catalog_id: 'catalog_123',
+            product_retailer_id: 'product_456',
           },
-        );
+        },
+      });
       expect(result.messages[0].id).toBe('wamid.test123');
     });
 
@@ -64,7 +63,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendSingleProduct({
         to: testRecipient,
@@ -73,8 +72,8 @@ describe('CommerceMessagesAPI', () => {
         body: 'Check out this amazing product!',
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.interactive.body).toEqual({
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.interactive.body).toEqual({
         text: 'Check out this amazing product!',
       });
     });
@@ -86,7 +85,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendSingleProduct({
         to: testRecipient,
@@ -95,8 +94,8 @@ describe('CommerceMessagesAPI', () => {
         footer: 'Limited time offer',
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.interactive.footer).toEqual({
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.interactive.footer).toEqual({
         text: 'Limited time offer',
       });
     });
@@ -108,7 +107,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendSingleProduct({
         to: testRecipient,
@@ -118,9 +117,9 @@ describe('CommerceMessagesAPI', () => {
         footer: 'Free shipping',
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.interactive.body.text).toBe('Check out this product');
-      expect(callArgs.data.interactive.footer.text).toBe('Free shipping');
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.interactive.body.text).toBe('Check out this product');
+      expect(callArgs.interactive.footer.text).toBe('Free shipping');
     });
   });
 
@@ -132,7 +131,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await commerceAPI.sendMultiProduct({
         to: testRecipient,
@@ -147,18 +146,17 @@ describe('CommerceMessagesAPI', () => {
             ],
           },
         ],
-      }));
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/messages`, {
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
-          to: testRecipient,
-          type: 'interactive',
-          interactive: {
-            type: 'product_list',
-            body: {
-              text: 'Check out these products',
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: testRecipient,
+        type: 'interactive',
+        interactive: {
+          type: 'product_list',
+          body: {
+            text: 'Check out these products',
             },
             action: {
               catalog_id: 'catalog_123',
@@ -173,7 +171,7 @@ describe('CommerceMessagesAPI', () => {
               ],
             },
           },
-        );
+        });
       expect(result.messages[0].id).toBe('wamid.test123');
     });
 
@@ -184,7 +182,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendMultiProduct({
         to: testRecipient,
@@ -199,8 +197,8 @@ describe('CommerceMessagesAPI', () => {
         ],
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.interactive.header).toEqual({
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.interactive.header).toEqual({
         type: 'text',
         text: 'Our Products',
       });
@@ -213,7 +211,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendMultiProduct({
         to: testRecipient,
@@ -228,8 +226,8 @@ describe('CommerceMessagesAPI', () => {
         ],
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.interactive.footer).toEqual({
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.interactive.footer).toEqual({
         text: 'Limited stock',
       });
     });
@@ -241,7 +239,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendMultiProduct({
         to: testRecipient,
@@ -263,8 +261,8 @@ describe('CommerceMessagesAPI', () => {
         ],
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.interactive.action.sections).toHaveLength(3);
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.interactive.action.sections).toHaveLength(3);
     });
 
     it('should support multiple products in one section', async () => {
@@ -274,7 +272,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendMultiProduct({
         to: testRecipient,
@@ -294,8 +292,8 @@ describe('CommerceMessagesAPI', () => {
         ],
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.interactive.action.sections[0].product_items).toHaveLength(5);
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.interactive.action.sections[0].product_items).toHaveLength(5);
     });
   });
 
@@ -307,7 +305,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await commerceAPI.sendCatalog({
         to: testRecipient,
@@ -329,7 +327,7 @@ describe('CommerceMessagesAPI', () => {
               name: 'catalog_message',
             },
           },
-        );
+        });
       expect(result.messages[0].id).toBe('wamid.test123');
     });
 
@@ -340,7 +338,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendCatalog({
         to: testRecipient,
@@ -348,8 +346,8 @@ describe('CommerceMessagesAPI', () => {
         footer: 'New items added weekly',
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.interactive.footer).toEqual({
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.interactive.footer).toEqual({
         text: 'New items added weekly',
       });
     });
@@ -363,7 +361,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await commerceAPI.sendCatalogTemplate({
         to: testRecipient,
@@ -383,7 +381,7 @@ describe('CommerceMessagesAPI', () => {
             },
             components: undefined,
           },
-        );
+        });
       expect(result.messages[0].id).toBe('wamid.test123');
     });
 
@@ -394,7 +392,7 @@ describe('CommerceMessagesAPI', () => {
         messages: [{ id: 'wamid.test123' }],
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await commerceAPI.sendCatalogTemplate({
         to: testRecipient,
@@ -413,10 +411,10 @@ describe('CommerceMessagesAPI', () => {
         ],
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.template.components).toBeDefined();
-      expect(callArgs.data.template.components).toHaveLength(1);
-      expect(callArgs.data.template.components[0].type).toBe('body');
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.template.components).toBeDefined();
+      expect(callArgs.template.components).toHaveLength(1);
+      expect(callArgs.template.components[0].type).toBe('body');
     });
 
     it('should support different language codes', async () => {
@@ -428,7 +426,7 @@ describe('CommerceMessagesAPI', () => {
 
       const languageCodes = ['en_US', 'id_ID', 'es_ES', 'fr_FR'];
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       for (const language_code of languageCodes) {
         await commerceAPI.sendCatalogTemplate({
@@ -437,10 +435,10 @@ describe('CommerceMessagesAPI', () => {
           language_code,
         });
 
-        const callArgs = vi.mocked(mockHttpClient.get).mock.calls[
-          vi.mocked(mockHttpClient.get).mock.calls.length - 1
-        ][0];
-        expect(callArgs.data.template.language.code).toBe(language_code);
+        const callArgs = vi.mocked(mockHttpClient.post).mock.calls[
+          vi.mocked(mockHttpClient.post).mock.calls.length - 1
+        ][1];
+        expect(callArgs.template.language.code).toBe(language_code);
       }
     });
   });
