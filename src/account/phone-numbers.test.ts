@@ -101,8 +101,7 @@ describe('PhoneNumbersAPI', () => {
             value: 'SANDBOX',
           },
         ],
-      }));
-
+      });
 
       expect(mockHttpClient.get).toHaveBeenCalledWith(expect.stringContaining('filtering'));
     });
@@ -264,36 +263,34 @@ describe('PhoneNumbersAPI', () => {
     it('should request verification code via SMS', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await phoneNumbersAPI.requestVerificationCode({
         code_method: 'SMS',
         locale: 'en_US',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/request_code`, {
-          code_method: 'SMS',
-          locale: 'en_US',
-        );
+        code_method: 'SMS',
+        locale: 'en_US',
+      });
       expect(result.success).toBe(true);
     });
 
     it('should request verification code via VOICE', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await phoneNumbersAPI.requestVerificationCode({
         code_method: 'VOICE',
         locale: 'en_US',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/request_code`, {
-          code_method: 'VOICE',
-          locale: 'en_US',
-        );
+        code_method: 'VOICE',
+        locale: 'en_US',
+      });
       expect(result.success).toBe(true);
     });
 
@@ -301,20 +298,18 @@ describe('PhoneNumbersAPI', () => {
       const mockResponse = { success: true };
       const locales = ['en_US', 'id_ID', 'es_ES', 'fr_FR', 'de_DE'];
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       for (const locale of locales) {
         await phoneNumbersAPI.requestVerificationCode({
           code_method: 'SMS',
           locale,
-    });
-
+        });
 
         expect(mockHttpClient.post).toHaveBeenCalledWith(
+          expect.any(String),
           expect.objectContaining({
-            data: expect.objectContaining({
-              locale,
-            }),
+            locale,
           }),
         );
       }
@@ -324,7 +319,7 @@ describe('PhoneNumbersAPI', () => {
       const customPhoneNumberId = '987654321';
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await phoneNumbersAPI.requestVerificationCode(
         {
@@ -335,9 +330,9 @@ describe('PhoneNumbersAPI', () => {
       );
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${customPhoneNumberId}/request_code`, {
-          code_method: 'SMS',
-          locale: 'en_US',
-        );
+        code_method: 'SMS',
+        locale: 'en_US',
+      });
     });
   });
 
@@ -345,16 +340,15 @@ describe('PhoneNumbersAPI', () => {
     it('should verify code successfully', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await phoneNumbersAPI.verifyCode({
         code: '123456',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/verify_code`, {
-          code: '123456',
-        );
+        code: '123456',
+      });
       expect(result.success).toBe(true);
     });
 
@@ -362,7 +356,7 @@ describe('PhoneNumbersAPI', () => {
       const customPhoneNumberId = '987654321';
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await phoneNumbersAPI.verifyCode(
         {
@@ -372,8 +366,8 @@ describe('PhoneNumbersAPI', () => {
       );
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${customPhoneNumberId}/verify_code`, {
-          code: '123456',
-        );
+        code: '123456',
+      });
     });
   });
 
@@ -381,16 +375,15 @@ describe('PhoneNumbersAPI', () => {
     it('should set two-step verification PIN', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await phoneNumbersAPI.setTwoStepPin({
         pin: '123456',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}`, {
-          pin: '123456',
-        );
+        pin: '123456',
+      });
       expect(result.success).toBe(true);
     });
 
@@ -398,7 +391,7 @@ describe('PhoneNumbersAPI', () => {
       const customPhoneNumberId = '987654321';
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await phoneNumbersAPI.setTwoStepPin(
         {
@@ -408,8 +401,8 @@ describe('PhoneNumbersAPI', () => {
       );
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${customPhoneNumberId}`, {
-          pin: '654321',
-        );
+        pin: '654321',
+      });
     });
   });
 });

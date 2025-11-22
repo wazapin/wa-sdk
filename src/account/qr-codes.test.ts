@@ -184,11 +184,11 @@ describe('QRCodeAPI', () => {
         deep_link_url: 'https://wa.me/qr/test',
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await qrCodeAPI.createQRCode();
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {);
+      expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {});
       expect(result.code).toBe(testQRCodeId);
     });
 
@@ -199,16 +199,15 @@ describe('QRCodeAPI', () => {
         deep_link_url: 'https://wa.me/qr/test',
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await qrCodeAPI.createQRCode({
         prefilled_message: 'Hello, I need help',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {
-          prefilled_message: 'Hello, I need help',
-        );
+        prefilled_message: 'Hello, I need help',
+      });
       expect(result.prefilled_message).toBe('Hello, I need help');
     });
 
@@ -220,16 +219,15 @@ describe('QRCodeAPI', () => {
         qr_image_url: 'https://example.com/qr.svg',
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await qrCodeAPI.createQRCode({
         generate_qr_image: 'SVG',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {
-          generate_qr_image: 'SVG',
-        );
+        generate_qr_image: 'SVG',
+      });
       expect(result.qr_image_url).toBeDefined();
     });
 
@@ -241,16 +239,15 @@ describe('QRCodeAPI', () => {
         qr_image_url: 'https://example.com/qr.png',
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await qrCodeAPI.createQRCode({
         generate_qr_image: 'PNG',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testPhoneNumberId}/message_qrdls`, {
-          generate_qr_image: 'PNG',
-        );
+        generate_qr_image: 'PNG',
+      });
       expect(result.qr_image_url).toBeDefined();
     });
 
@@ -262,12 +259,12 @@ describe('QRCodeAPI', () => {
         qr_image_url: 'https://example.com/qr.svg',
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await qrCodeAPI.createQRCode({
         prefilled_message: 'Contact us',
         generate_qr_image: 'SVG',
-    });
+      });
 
 
       expect(result.prefilled_message).toBe('Contact us');
@@ -279,30 +276,29 @@ describe('QRCodeAPI', () => {
     it('should update QR code message', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await qrCodeAPI.updateQRCode(testQRCodeId, {
         prefilled_message: 'Updated message',
-    });
-
+      });
 
       expect(mockHttpClient.post).toHaveBeenCalledWith(`${testQRCodeId}`, {
-          prefilled_message: 'Updated message',
-        );
+        prefilled_message: 'Updated message',
+      });
       expect(result.success).toBe(true);
     });
 
     it('should allow empty prefilled message', async () => {
       const mockResponse = { success: true };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       await qrCodeAPI.updateQRCode(testQRCodeId, {
         prefilled_message: '',
       });
 
-      const callArgs = vi.mocked(mockHttpClient.get).mock.calls[0][0];
-      expect(callArgs.data.prefilled_message).toBe('');
+      const callArgs = vi.mocked(mockHttpClient.post).mock.calls[0][1];
+      expect(callArgs.prefilled_message).toBe('');
     });
   });
 
@@ -328,12 +324,11 @@ describe('QRCodeAPI', () => {
         deep_link_url: 'https://wa.me/qr/test',
       };
 
-      vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
       const result = await qrCodeAPI.createQRCode({
         prefilled_message: maxLengthMessage,
-    });
-
+      });
 
       expect(result.prefilled_message).toHaveLength(60);
     });
@@ -351,14 +346,13 @@ describe('QRCodeAPI', () => {
           qr_image_url: `https://example.com/qr.${format.toLowerCase()}`,
         };
 
-        vi.mocked(mockHttpClient.get).mockResolvedValue(mockResponse);
+        vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
 
         const result = await qrCodeAPI.createQRCode({
           generate_qr_image: format,
-    });
+        });
 
-
-        expect(result.qr_image_url).toContain(format.toLowerCase();
+        expect(result.qr_image_url).toContain(format.toLowerCase());
       }
     });
   });
